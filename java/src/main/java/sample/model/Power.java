@@ -1,2 +1,5 @@
-package main.java.sample.model;public class Power {
+package main.java.sample.model;
+
+public class Power extends Agent {
+
 }

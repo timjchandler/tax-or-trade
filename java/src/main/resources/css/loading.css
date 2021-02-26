@@ -1,0 +1,29 @@
+.dotted-circle
+{
+    -fx-background-color: linear-gradient(to top right, #e76f51, #f4a261);
+}
+
+.power-plant
+{
+    -fx-background-color: linear-gradient(to top right, #6c757d, #b1a7a6, #d9d9d9);
+}
+
+.circle
+{
+    -fx-background-color: #f8961e;/*linear-gradient(to top right, #e76f51, #f4a261);*/
+}
+
+.circle-one
+{
+    -fx-background-color: #f9c74f;/*linear-gradient(to top right, #f4a261, #f9c74f);*/
+}
+
+.circle-two
+{
+    -fx-background-color: #90be6d;/*linear-gradient(to top right, #f9c74f, #90be6d);*/
+}
+
+.bar
+{
+    -fx-background-color: transparent; 
+}

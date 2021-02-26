@@ -1,0 +1,65 @@
+.left-bar
+{
+    -fx-background-color: linear-gradient(to right, #343a40, #212529);
+    -fx-max-width: 40px;
+
+}
+.start-button
+{
+    -fx-background-color: #90be6d;
+}
+
+.stop-button
+{
+    -fx-background-color: #f3722c;
+}
+
+.restart-button
+{
+    -fx-background-color: #f9c74f;
+}
+
+.settings-button
+{
+    -fx-background-color: #118ab2;
+}
+
+.button
+{
+    -fx-alignment: center;
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+    -fx-max-width: 20px;
+    -fx-max-height: 20px;
+}
+
+.button:hover
+{
+    -fx-background-color: #fff1e6;
+}
+
+.button-window
+{
+    -fx-background-color: #b5b5b5;
+    -fx-alignment: center;
+    -fx-min-width: 12px;
+    -fx-min-height: 12px;
+    -fx-max-width: 12px;
+    -fx-max-height: 12px;
+}
+
+.button-close:hover
+{
+    -fx-background-color: #dc2f02;
+}
+
+.button-max:hover
+{
+
+    -fx-background-color: #80b918;
+}
+
+.button-min:hover
+{
+    -fx-background-color: #fdc500;
+}

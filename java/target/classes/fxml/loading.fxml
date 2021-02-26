@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane maxHeight="400.0" maxWidth="400.0" minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="400.0" stylesheets="@../css/shapes.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.Loading">
+   <children>
+      <Pane fx:id="gasStacks" layoutX="50.0" layoutY="50.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefHeight="300.0" prefWidth="300.0" styleClass="power-plant" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="25.0">
+         <stylesheets>
+            <URL value="@../css/shapes.css" />
+            <URL value="@../css/loading.css" />
+         </stylesheets>
+      </Pane>
+      <Pane fx:id="circle0" layoutX="7.0" layoutY="191.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="165.0">
+         <stylesheets>
+            <URL value="@../css/shapes.css" />
+            <URL value="@../css/loading.css" />
+         </stylesheets>
+         <styleClass>
+            <String fx:value="dotted-circle" />
+            <String fx:value="circle" />
+         </styleClass>
+      </Pane>
+      <Pane fx:id="circle1" layoutX="200.0" layoutY="81.0" prefHeight="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="155.0" AnchorPane.rightAnchor="25.0">
+         <stylesheets>
+            <URL value="@../css/shapes.css" />
+            <URL value="@../css/loading.css" />
+         </stylesheets>
+         <styleClass>
+            <String fx:value="dotted-circle" />
+            <String fx:value="circle-one" />
+         </styleClass>
+      </Pane>
+      <Pane fx:id="circle2" layoutX="17.0" layoutY="201.0" prefHeight="100.0" prefWidth="100.0" AnchorPane.bottomAnchor="275.0" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="165.0" AnchorPane.topAnchor="25.0">
+         <stylesheets>
+            <URL value="@../css/shapes.css" />
+            <URL value="@../css/loading.css" />
+         </stylesheets>
+         <styleClass>
+            <String fx:value="dotted-circle" />
+            <String fx:value="circle-two" />
+         </styleClass>
+      </Pane>
+      <Pane fx:id="loadingBar" layoutX="194.0" layoutY="276.0" prefHeight="200.0" prefWidth="200.0" styleClass="bar" stylesheets="@../css/loading.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="385.0" />
+   </children>
+</AnchorPane>
