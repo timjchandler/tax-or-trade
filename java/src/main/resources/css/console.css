@@ -30,3 +30,15 @@
     -fx-background-color: #343a40;
     -fx-text-fill: #f2e9e4;
 }
+
+.in-box
+{
+    -fx-background-color: #343a40;
+    -fx-max-height: 27px;
+    -fx-min-height: 27px;
+}
+
+.prompt
+{
+    -fx-fill: #f2e9e4;
+}
