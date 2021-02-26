@@ -7,6 +7,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sample.model.Power;
+import sample.model.PowerType;
 
 public class Console {
 
@@ -51,7 +53,7 @@ public class Console {
             switch (keyEvent.getCode()) {       // TODO: Add more commands (history arrows, etc.)
                 case ENTER:
                     print(" > " + consoleIn.getText());
-                    handleInput(consoleIn.getText());
+                    handleInput(consoleIn.getText().toLowerCase());
                     consoleIn.clear();
             }
         });
@@ -67,6 +69,10 @@ public class Console {
                 break;
             case "hello":
                 print("Hi there.");
+                break;
+            case "new-power":
+                Power p = new Power(new PowerType(PowerType.Type.COAL));
+                Console.print(p.toString());
                 break;
             case "":
                 break;

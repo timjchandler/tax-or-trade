@@ -7,7 +7,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
@@ -20,7 +19,6 @@ import java.util.ResourceBundle;
 public class FrameController implements Initializable {
 
     private static boolean isMaximized = false;
-    private static boolean dragInitialised = false;
     private static Stage stage = null;
     private static double xOffset;
     private static double yOffset;
@@ -37,12 +35,17 @@ public class FrameController implements Initializable {
     @FXML
     private VBox leftBar;
 
+    @FXML
+    private VBox lowerLeftBar;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 //        if (mainPane != null) /*stage = (Stage)*/ mainPane.getScene();//.getWindow();
         new Console(consoleBox);
         loadPage("loading");
+        initDraggable(leftBar);
+        initDraggable(lowerLeftBar);
     }
 
     private void loadPage(String page) {
@@ -58,20 +61,20 @@ public class FrameController implements Initializable {
 
     @FXML
     private void close(ActionEvent event) {
-        setStage();
+//        setStage();
         shutDown(stage);
     }
 
     @FXML
     private void minimize(ActionEvent event) {
-        setStage();
+//        setStage();
         stage.setIconified(true);
         Console.print(":: Minimized");
     }
 
     @FXML
     private void maximize(ActionEvent event) {
-        setStage();
+//        setStage();
         manageMaximize(stage);
     }
 
@@ -93,25 +96,19 @@ public class FrameController implements Initializable {
         }
     }
 
-    @FXML
-    private void initDraggable() {
-        if (dragInitialised) return;
-        dragInitialised = true;
-        setStage();
-        leftBar.setOnMousePressed(event -> {
+    private void initDraggable(VBox bar) {
+        bar.setOnMousePressed(event -> {
             xOffset = stage.getX() - event.getScreenX();
             yOffset = stage.getY() - event.getScreenY();
         });
-        leftBar.setOnMouseDragged(event -> {
+        bar.setOnMouseDragged(event -> {
             stage.setX(event.getScreenX() + xOffset);
             stage.setY(event.getScreenY() + yOffset);
         });
     }
 
-    private void setStage() {
-        if (stage == null) {
-            stage = (Stage) mainPane.getScene().getWindow();
-        }
+    public static void setStage(Stage stage) {
+        FrameController.stage = stage;
     }
 
 //    public static void shutDown() {

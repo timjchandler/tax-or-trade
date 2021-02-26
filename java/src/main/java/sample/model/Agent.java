@@ -1,4 +1,4 @@
-package main.java.sample.model;
+package sample.model;
 
 public abstract class Agent {
 

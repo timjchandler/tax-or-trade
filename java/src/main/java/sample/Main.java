@@ -24,6 +24,7 @@ public class Main extends Application {
         new KeyboardShortcuts(scene);
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/media/logo.png")));
+        FrameController.setStage(primaryStage);
         primaryStage.show();
     }
 
