@@ -4,7 +4,8 @@ module tjc.rug {
     requires javafx.graphics;
     requires javafx.controls;
     requires commons.io;
-    requires rt;
+//    requires rt;
+//    requires jfxrt;
 
     opens tjc.rug;
     opens tjc.rug.controller;

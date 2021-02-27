@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>groupId</groupId>
-    <artifactId>java</artifactId>
+    <artifactId>carbon-tax-or-trade</artifactId>
     <version>1.0</version>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>11.0.10</java.version>
         <maven.compiler.release>11</maven.compiler.release>
         <javafx.version>11.0.2</javafx.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
