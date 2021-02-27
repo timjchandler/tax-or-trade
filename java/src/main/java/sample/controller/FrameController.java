@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
@@ -38,6 +39,18 @@ public class FrameController implements Initializable {
     @FXML
     private VBox lowerLeftBar;
 
+    @FXML
+    private Button start;
+
+    @FXML
+    private Button stop;
+
+    @FXML
+    private Button restart;
+
+    @FXML
+    private Button settings;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -58,6 +71,31 @@ public class FrameController implements Initializable {
         }
         mainPane.setCenter(root);
     }
+
+    @FXML
+    private void barClick(ActionEvent event) {
+        if (event.getSource().equals(start)) startRun();
+        else if (event.getSource().equals(stop)) stopRun();
+        else if (event.getSource().equals(restart)) restartRun();
+        else if (event.getSource().equals(settings)) toSettings();
+    }
+
+    public static void toSettings() {
+        Console.print(":: Settings");
+    }
+
+    public static void restartRun() {
+        Console.print(":: Restart");
+    }
+
+    public static void stopRun() {
+        Console.print(":: Stop");
+    }
+
+    public static void startRun() {
+        Console.print(":: Start");
+    }
+
 
     @FXML
     private void close(ActionEvent event) {

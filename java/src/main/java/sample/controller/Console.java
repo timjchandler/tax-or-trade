@@ -10,14 +10,34 @@ import javafx.stage.Stage;
 import sample.model.Power;
 import sample.model.PowerType;
 
+import java.nio.file.Files;
+
 public class Console {
 
     private final static AnchorPane inBox = new AnchorPane();
     private final static TextArea consoleView = new TextArea();
     private final static TextField consoleIn = new TextField();
     private final static Text prompt = new Text(" > ");
+    private static String help = null;
 
     public Console(VBox consoleArea) {
+        if (help == null) setHelp();
+        initConsole(consoleArea);
+        print(":: Console initialised");
+    }
+
+    public static void print(String string) {
+        consoleView.appendText(string);
+        consoleView.appendText(System.lineSeparator());
+        System.out.println(string);
+    }
+
+    private void setHelp() {
+
+//        help = Files.readString
+    }
+
+    private void initConsole(VBox consoleArea) {
         AnchorPane.setLeftAnchor(prompt, 10.0);
         AnchorPane.setBottomAnchor(prompt, 6.0);
         inBox.getChildren().add(prompt);
@@ -28,17 +48,6 @@ public class Console {
         consoleArea.getChildren().add(consoleView);
         consoleArea.getChildren().add(inBox);
         consoleArea.getStylesheets().add("/css/console.css");
-        initConsole();
-        print(":: Console initialised");
-    }
-
-    public static void print(String string) {
-        consoleView.appendText(string);
-        consoleView.appendText(System.lineSeparator());
-        System.out.println(string);
-    }
-
-    private void initConsole() {
         inBox.getStyleClass().add("in-box");
         prompt.getStyleClass().add("prompt");
         consoleView.getStyleClass().add("console-view");
@@ -74,10 +83,25 @@ public class Console {
                 Power p = new Power(new PowerType(PowerType.Type.COAL));
                 Console.print(p.toString());
                 break;
+            case "start-run":
+                FrameController.startRun();
+                break;
+            case "stop":
+                FrameController.stopRun();
+                break;
+            case "restart-run":
+                FrameController.restartRun();
+                break;
+            case "settings":
+                FrameController.toSettings();
+                break;
+            case "help":
+                print(help);
+                break;
             case "":
                 break;
             default:
-                print("Unknown command \"" + input + "\"");
+                print("Unknown command \"" + input + "\"\n Enter 'help' for available commands");
         }
     }
 }

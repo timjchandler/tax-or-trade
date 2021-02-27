@@ -33,6 +33,7 @@
 
 .in-box
 {
+    -fx-background-radius: 0 0 10 0;
     -fx-background-color: #1d1d1d;
     -fx-max-height: 27px;
     -fx-min-height: 27px;

@@ -33,7 +33,7 @@ public class Main extends Application {
         try {
             URL iconURL = Main.class.getResource("/media/logo.png");
             java.awt.Image image = new ImageIcon(iconURL).getImage();
-            com.apple.eawt.Application.getApplication().setDockIconImage(image);
+//            com.apple.eawt.Application.getApplication().setDockIconImage(image);
         } catch (Exception e) {
         }
         launch(args);

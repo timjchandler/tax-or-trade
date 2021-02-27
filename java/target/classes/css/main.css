@@ -1,5 +1,16 @@
+.back-pane
+{
+    -fx-background-radius: 10 10 10 10;
+}
+
+.console-box
+{
+    -fx-background-radius: 0 0 10 0;
+}
+
 .left-bar
 {
+    -fx-background-radius: 10 0 0 10;
     -fx-background-color: linear-gradient(to right, #343a40, #212529);
     -fx-max-width: 40px;
 
