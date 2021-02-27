@@ -1,9 +1,16 @@
 ################################################################
-##   The following shortcuts may be used in this console:     ##
+##   The following commands may be used in this console:      ##
 ##       start-run           Begin a run                      ##
 ##       stop                Stop a run                       ##
 ##       restart-run         Restart a run                    ##
 ##       settings            Go to run settings               ##
 ##       exit                Quit the program                 ##
 ##       clear-all           Clear the console                ##
+## ---------------------------------------------------------- ##
+##   The following keyboard shortcuts have been implemented:  ##
+##       super-W            Quit the program                  ##
+## ---------------------------------------------------------- ##
+##   NOTE: The commands mentioned above have been implemented ##
+##         within the console, but may not yet link to fully  ##
+##         operational functions.                             ##
 ################################################################

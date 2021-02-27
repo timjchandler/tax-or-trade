@@ -6,7 +6,7 @@
 
     <groupId>groupId</groupId>
     <artifactId>java</artifactId>
-    <version>PROTOTYPE</version>
+    <version>1.0</version>
 
     <properties>
         <java.version>11</java.version>
@@ -32,6 +32,17 @@
             <artifactId>javafx-graphics</artifactId>
         <version>${javafx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <!--        May not be needed-->
+<!--        <dependency>-->
+<!--            <groupId>org.openjfx</groupId>-->
+<!--            <artifactId>javafx-swing</artifactId>-->
+<!--            <version>11</version>-->
+<!--        </dependency>-->
     </dependencies>
     <build>
         <plugins>

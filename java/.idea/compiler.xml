@@ -20,6 +20,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="carbon-tax-or-trade" target="11" />
       <module name="java" target="11" />
     </bytecodeTargetLevel>
   </component>

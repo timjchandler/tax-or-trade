@@ -51,13 +51,8 @@ public class FrameController implements Initializable {
     @FXML
     private Button settings;
 
-    public FrameController() {
-
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        if (mainPane != null) /*stage = (Stage)*/ mainPane.getScene();//.getWindow();
         new Console(consoleBox);
         loadPage("loading");
         initDraggable(leftBar);
@@ -101,21 +96,18 @@ public class FrameController implements Initializable {
 
 
     @FXML
-    private void close(ActionEvent event) {
-//        setStage();
+    private void close() {
         shutDown(stage);
     }
 
     @FXML
-    private void minimize(ActionEvent event) {
-//        setStage();
+    private void minimize() {
         stage.setIconified(true);
         Console.print(":: Minimized");
     }
 
     @FXML
-    private void maximize(ActionEvent event) {
-//        setStage();
+    private void maximize() {
         manageMaximize(stage);
     }
 
@@ -151,10 +143,6 @@ public class FrameController implements Initializable {
     public static void setStage(Stage stage) {
         FrameController.stage = stage;
     }
-
-//    public static void shutDown() {
-//        if (stage != null) shutDown(stage);
-//    }
 
     public static void shutDown(Stage stage) {
         stage.close();

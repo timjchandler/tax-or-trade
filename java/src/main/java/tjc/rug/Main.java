@@ -11,35 +11,24 @@ import javafx.stage.StageStyle;
 import tjc.rug.controller.FrameController;
 import tjc.rug.controller.KeyboardShortcuts;
 
-import javax.swing.*;
-import java.net.URL;
-
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
+        Image icon = new Image (getClass().getResourceAsStream("/media/logo.png"));
         primaryStage.setTitle("Tax vs Trade");
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         Scene scene = new Scene(root, FrameController.defaultWidth, FrameController.defaultHeight);
         scene.setFill(Color.TRANSPARENT);
         new KeyboardShortcuts(scene);
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/media/logo.png")));
         FrameController.setStage(primaryStage);
+        primaryStage.getIcons().add(icon); // FIXME: Not working, but no error shown. Image is correctly read in.
         primaryStage.show();
     }
 
     public static void main(String[] args) {
-        // Update task bar logo on MacOS
-        try {
-            URL iconURL = Main.class.getResource("/media/logo.png");
-            java.awt.Image image = new ImageIcon(iconURL).getImage();
-//            com.apple.eawt.Application.getApplication().setDockIconImage(image);
-        } catch (Exception e) {
-        }
         launch(args);
     }
-
-
 }

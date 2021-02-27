@@ -1,5 +1,7 @@
 package tjc.rug.controller;
 
+import org.apache.commons.io.IOUtils;
+
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -10,13 +12,20 @@ import javafx.stage.Stage;
 import tjc.rug.model.Power;
 import tjc.rug.model.PowerType;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+
 public class Console {
 
     private final static AnchorPane inBox = new AnchorPane();
     private final static TextArea consoleView = new TextArea();
     private final static TextField consoleIn = new TextField();
     private final static Text prompt = new Text(" > ");
+    private final static ArrayList<String> history = new ArrayList<>();
     private static String help = null;
+    private static int historyIdx = 0;
 
     public Console(VBox consoleArea) {
         if (help == null) setHelp();
@@ -31,8 +40,12 @@ public class Console {
     }
 
     private void setHelp() {
-
-//        help = Files.readString
+        InputStream helpStream = getClass().getResourceAsStream("/media/help.txt");
+        try {
+            help = IOUtils.toString(helpStream, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initConsole(VBox consoleArea) {
@@ -52,17 +65,34 @@ public class Console {
         consoleView.getStyleClass().add("console-view");
         consoleView.setEditable(false);
         consoleIn.getStyleClass().add("console-in");
-        print(":: Welcome");
+        print(":: Version: PROTOTYPE");
         initInput();
     }
 
     private void initInput() {
         consoleIn.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
-            switch (keyEvent.getCode()) {       // TODO: Add more commands (history arrows, etc.)
-                case ENTER:
-                    print(" > " + consoleIn.getText());
-                    handleInput(consoleIn.getText().toLowerCase());
+            switch (keyEvent.getCode()) {
+                case ENTER:                     // Enter a command
+                    String in = consoleIn.getText();
+                    print(" > " + in);
+                    handleInput(in.toLowerCase());
+                    if (!in.equals("")) history.add(0, in);
+                    historyIdx = 0;
                     consoleIn.clear();
+                    break;
+                case UP:                        // Cycle up through previous commands
+                    if (history.size() > historyIdx) {
+                        consoleIn.setText(history.get(historyIdx));
+                        ++historyIdx;
+                    }
+                    break;
+                case DOWN:                      // Cycle down through previous commands
+                    if (historyIdx <= 0) consoleIn.clear();
+                    else {
+                        --historyIdx;
+                        consoleIn.setText(history.get(historyIdx - 1));
+                        break;
+                    }
             }
         });
     }
@@ -78,7 +108,7 @@ public class Console {
             case "hello":
                 print("Hi there.");
                 break;
-            case "new-power":
+            case "new-power":                   // Debug/test command
                 Power p = new Power(new PowerType(PowerType.Type.COAL));
                 Console.print(p.toString());
                 break;
@@ -100,7 +130,7 @@ public class Console {
             case "":
                 break;
             default:
-                print("Unknown command \"" + input + "\"\n Enter 'help' for available commands");
+                print("Unknown command \"" + input + "\"\nEnter 'help' for available commands");
         }
     }
 }
