@@ -1,7 +1,5 @@
 package tjc.rug.controller;
 
-import org.apache.commons.io.IOUtils;
-
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -9,6 +7,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.apache.commons.io.IOUtils;
 import tjc.rug.model.Power;
 import tjc.rug.model.PowerType;
 
@@ -87,10 +86,13 @@ public class Console {
                     }
                     break;
                 case DOWN:                      // Cycle down through previous commands
-                    if (historyIdx <= 0) consoleIn.clear();
+                    if (historyIdx <= 1) {
+                        consoleIn.clear();
+                        historyIdx = 0;
+                    }
                     else {
                         --historyIdx;
-                        consoleIn.setText(history.get(historyIdx - 1));
+                        consoleIn.setText(history.get(Math.max(0, historyIdx - 1)));
                         break;
                     }
             }
