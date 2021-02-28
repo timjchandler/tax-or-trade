@@ -35,6 +35,11 @@
     -fx-background-color: #118ab2;
 }
 
+.home-button
+{
+    -fx-background-color: #c8553d;
+}
+
 .button
 {
     -fx-alignment: center;

@@ -51,6 +51,9 @@ public class FrameController implements Initializable {
     @FXML
     private Button settings;
 
+    @FXML
+    private Button homeButton;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         new Console(consoleBox);
@@ -76,6 +79,7 @@ public class FrameController implements Initializable {
         else if (event.getSource().equals(stop)) stopRun();
         else if (event.getSource().equals(restart)) restartRun();
         else if (event.getSource().equals(settings)) toSettings();
+        else if (event.getSource().equals(homeButton)) goHome();
     }
 
     public static void toSettings() {
@@ -93,6 +97,8 @@ public class FrameController implements Initializable {
     public static void startRun() {
         Console.print(":: Start");
     }
+
+    public static void goHome() { Console.print(":: Home"); }
 
 
     @FXML
