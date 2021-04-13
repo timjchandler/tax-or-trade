@@ -1,6 +1,7 @@
 tjc/rug/Main.class
 tjc/rug/controller/Loading.class
 tjc/rug/controller/Console.class
+tjc/rug/controller/Settings.class
 tjc/rug/controller/KeyboardShortcuts.class
 tjc/rug/model/PowerType$1.class
 module-info.class

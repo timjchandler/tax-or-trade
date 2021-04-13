@@ -99,7 +99,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="settings" mnemonicParsing="false" onAction="#barClick">
+            <Button fx:id="settingsButton" mnemonicParsing="false" onAction="#barClick">
                <stylesheets>
                   <URL value="@../css/main.css" />
                   <URL value="@../css/shapes.css" />

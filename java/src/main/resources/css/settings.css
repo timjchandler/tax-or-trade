@@ -1,0 +1,38 @@
+.slider
+{
+    -fx-background-color: linear-gradient(to left, #d9d9d9, rgba(144, 224, 239, 0));
+    -fx-background-insets: 0 0 -1 0, 0, 1;
+    -fx-background-radius: 2px, 2px, 2px;
+    -fx-min-width: 180px;
+    -fx-max-width: 180px;
+}
+
+.slider .track
+{
+    -fx-background-color: transparent;
+}
+
+.slider .thumb
+{
+    -fx-background-color: #f0efeb;
+}
+
+.power-pane
+{
+    -fx-min-width: 200px;
+    -fx-max-width: 200px;
+    -fx-min-height: 100px;
+    -fx-max-height: 100px;
+    -fx-background-color: #8a817c;
+    -fx-background-radius: 5 5 5 5;
+}
+
+.text
+{
+    -fx-fill: #f0efeb;
+}
+
+.counter-text
+{
+    -fx-text-alignment: right;
+}

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="543.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tjc.rug.controller.Settings">
+   <children>
+      <VBox prefHeight="543.0" prefWidth="200.0" spacing="10.0">
+         <children>
+            <Pane prefHeight="100.0" prefWidth="200.0" styleClass="power-pane" stylesheets="@../css/settings.css">
+               <children>
+                  <Text layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Coal">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Text>
+                  <Slider layoutX="10.0" layoutY="36.0" />
+                  <Text layoutX="73.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="1" textAlignment="RIGHT" wrappingWidth="112.64453125">
+                     <font>
+                        <Font name="PT Mono Bold" size="18.0" />
+                     </font>
+                  </Text>
+                  <CheckBox layoutX="10.0" layoutY="66.0" mnemonicParsing="false" />
+                  <TextField layoutX="43.0" layoutY="63.0" prefHeight="27.0" prefWidth="147.0" promptText="Override" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Pane>
+            <Pane prefHeight="100.0" prefWidth="200.0" styleClass="power-pane" stylesheets="@../css/settings.css">
+               <children>
+                  <Text layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Gas">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Text>
+                  <Slider layoutX="10.0" layoutY="36.0" />
+                  <Text layoutX="73.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="1" textAlignment="RIGHT" wrappingWidth="112.64453125">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <CheckBox layoutX="10.0" layoutY="68.0" mnemonicParsing="false" />
+                  <TextField layoutX="43.0" layoutY="63.0" prefHeight="27.0" prefWidth="147.0" promptText="Override" />
+               </children>
+            </Pane>
+            <Pane prefHeight="100.0" prefWidth="200.0" styleClass="power-pane" stylesheets="@../css/settings.css">
+               <children>
+                  <Text layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Wind">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Text>
+                  <Slider layoutX="10.0" layoutY="36.0" />
+                  <Text layoutX="73.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="1" textAlignment="RIGHT" wrappingWidth="112.64453125">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <CheckBox layoutX="10.0" layoutY="68.0" mnemonicParsing="false" />
+                  <TextField layoutX="43.0" layoutY="63.0" prefHeight="27.0" prefWidth="147.0" promptText="Override" />
+               </children>
+            </Pane>
+            <Pane prefHeight="100.0" prefWidth="200.0" styleClass="power-pane" stylesheets="@../css/settings.css">
+               <children>
+                  <Text layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Nuclear">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Text>
+                  <Slider layoutX="10.0" layoutY="36.0" />
+                  <Text layoutX="73.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="1" textAlignment="RIGHT" wrappingWidth="112.64453125">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <CheckBox layoutX="10.0" layoutY="68.0" mnemonicParsing="false" />
+                  <TextField layoutX="43.0" layoutY="63.0" prefHeight="27.0" prefWidth="147.0" promptText="Override" />
+               </children>
+            </Pane>
+            <Pane prefHeight="100.0" prefWidth="200.0" styleClass="power-pane" stylesheets="@../css/settings.css">
+               <children>
+                  <Text layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Tidal">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Text>
+                  <Slider layoutX="10.0" layoutY="36.0" />
+                  <Text layoutX="73.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="1" textAlignment="RIGHT" wrappingWidth="112.64453125">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <CheckBox layoutX="10.0" layoutY="68.0" mnemonicParsing="false" />
+                  <TextField layoutX="43.0" layoutY="63.0" prefHeight="27.0" prefWidth="147.0" promptText="Override" />
+               </children>
+            </Pane>
+         </children>
+      </VBox>
+      <AnchorPane layoutX="352.0" layoutY="159.0" prefHeight="200.0" prefWidth="200.0" styleClass="power-pane" stylesheets="@../css/settings.css">
+         <children>
+            <Text layoutX="17.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Coal" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Text>
+            <Slider layoutX="10.0" layoutY="37.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="35.0" />
+            <Text layoutX="77.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="1" textAlignment="RIGHT" wrappingWidth="112.64453125" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="8.0">
+               <font>
+                  <Font name="PT Mono Bold" size="18.0" />
+               </font>
+            </Text>
+            <CheckBox layoutX="14.0" layoutY="64.0" mnemonicParsing="false" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
+            <TextField layoutX="39.0" layoutY="59.0" prefHeight="27.0" prefWidth="147.0" promptText="Override" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

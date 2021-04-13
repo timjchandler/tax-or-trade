@@ -111,8 +111,9 @@ public class Console {
                 print("Hi there.");
                 break;
             case "new-power":                   // Debug/test command
-                Power p = new Power(new PowerType(PowerType.Type.COAL));
-                Console.print(p.toString());
+//                Power p = new Power(new PowerType(PowerType.Type.COAL));
+//                Console.print(p.toString());
+                Console.print("Currently not doing anything");
                 break;
             case "start-run":
                 FrameController.startRun();
@@ -123,8 +124,14 @@ public class Console {
             case "restart-run":
                 FrameController.restartRun();
                 break;
-            case "settings":
-                FrameController.toSettings();
+//            case "settings":
+//                FrameController.toSettings();
+//                break;
+            case "australia":
+                print("Building power plants ...");
+                print("Running ");
+                for (int idx = 0; idx < 100000000; ++idx) { idx--; idx++; }
+                print("ERROR: in world");
                 break;
             case "help":
                 print(help);

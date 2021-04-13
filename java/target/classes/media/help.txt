@@ -8,7 +8,7 @@
 ||       clear-all           Clear the console                ||
 || ---------------------------------------------------------- ||
 ||   The following keyboard shortcuts have been implemented|  ||
-||       super-W            Quit the program                  ||
+||       super-W             Quit the program                 ||
 || ---------------------------------------------------------- ||
 ||   NOTE| The commands mentioned above have been implemented ||
 ||         within the console, but may not yet link to fully  ||

@@ -9,6 +9,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -26,6 +27,9 @@ public class FrameController implements Initializable {
 
     public static final int defaultWidth = 600;
     public static final int defaultHeight = 800;
+    private static Parent loadingScreen;
+    private Settings settings;
+//    private static Parent settingsScreen;
 
     @FXML
     private BorderPane mainPane;
@@ -49,7 +53,7 @@ public class FrameController implements Initializable {
     private Button restart;
 
     @FXML
-    private Button settings;
+    private Button settingsButton;
 
     @FXML
     private Button homeButton;
@@ -57,12 +61,15 @@ public class FrameController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         new Console(consoleBox);
-        loadPage("loading");
+        loadingScreen = loadPage("loading");
+        settings = new Settings();
+//        settingsScreen = loadPage("settings");
+        mainPane.setCenter(loadingScreen);
         initDraggable(leftBar);
         initDraggable(lowerLeftBar);
     }
 
-    private void loadPage(String page) {
+    private Parent loadPage(String page) {
         Parent root = null;
         String path = "/fxml/" + page + ".fxml";
         try {
@@ -70,7 +77,8 @@ public class FrameController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mainPane.setCenter(root);
+//        mainPane.setCenter(root);
+        return root;
     }
 
     @FXML
@@ -78,11 +86,12 @@ public class FrameController implements Initializable {
         if (event.getSource().equals(start)) startRun();
         else if (event.getSource().equals(stop)) stopRun();
         else if (event.getSource().equals(restart)) restartRun();
-        else if (event.getSource().equals(settings)) toSettings();
+        else if (event.getSource().equals(settingsButton)) toSettings();
         else if (event.getSource().equals(homeButton)) goHome();
     }
 
-    public static void toSettings() {
+    public void toSettings() {
+        mainPane.setCenter(settings.getSettings());
         Console.print(":: Settings");
     }
 
@@ -98,7 +107,10 @@ public class FrameController implements Initializable {
         Console.print(":: Start");
     }
 
-    public static void goHome() { Console.print(":: Home"); }
+    public  void goHome() {
+        mainPane.setCenter(loadingScreen);
+        Console.print(":: Home");
+    }
 
 
     @FXML
