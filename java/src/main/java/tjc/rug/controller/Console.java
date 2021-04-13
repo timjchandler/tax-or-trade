@@ -124,15 +124,6 @@ public class Console {
             case "restart-run":
                 FrameController.restartRun();
                 break;
-//            case "settings":
-//                FrameController.toSettings();
-//                break;
-            case "australia":
-                print("Building power plants ...");
-                print("Running ");
-                for (int idx = 0; idx < 100000000; ++idx) { idx--; idx++; }
-                print("ERROR: in world");
-                break;
             case "help":
                 print(help);
                 break;
