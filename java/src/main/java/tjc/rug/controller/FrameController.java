@@ -64,7 +64,6 @@ public class FrameController implements Initializable {
         new Console(consoleBox);
         loadingScreen = loadPage("loading");
         settings = new Settings();
-//        settingsScreen = loadPage("settings");
         mainPane.setCenter(loadingScreen);
         initDraggable(leftBar);
         initDraggable(lowerLeftBar);
@@ -78,7 +77,6 @@ public class FrameController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        mainPane.setCenter(root);
         return root;
     }
 

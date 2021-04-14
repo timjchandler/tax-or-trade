@@ -8,18 +8,18 @@ public class Power extends Agent {
     private PowerType powerType;
     private float carbonPerEnergyUnit;
 
-    public Power(PowerType powerType) {
-        random = new Random();
-        this.powerType = powerType;
-        initEfficiency();
-    }
+//    public Power(PowerType powerType) {
+//        random = new Random();
+//        this.powerType = powerType;
+//        initEfficiency();
+//    }
 
-    private void initEfficiency() {
-        float min = powerType.getMin();
-        carbonPerEnergyUnit = random.nextFloat();
-        carbonPerEnergyUnit *= powerType.getMax() - min;
-        carbonPerEnergyUnit += min;
-    }
+//    private void initEfficiency() {
+//        float min = powerType.getMin();
+//        carbonPerEnergyUnit = random.nextFloat();
+//        carbonPerEnergyUnit *= powerType.getMax() - min;
+//        carbonPerEnergyUnit += min;
+//    }
 
     @Override
     public String toString() {

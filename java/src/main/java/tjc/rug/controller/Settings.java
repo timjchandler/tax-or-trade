@@ -30,7 +30,7 @@ public class Settings {
         AnchorPane powerPane = new AnchorPane();
         powerPane.getStylesheets().add(css);
         powerPane.getStyleClass().add("power-pane");
-        setPaneText(powerPane, PowerType.toString(type));
+//        setPaneText(powerPane, PowerType.toString(type));
         addInput(powerPane, type);
         //todo: more...
 

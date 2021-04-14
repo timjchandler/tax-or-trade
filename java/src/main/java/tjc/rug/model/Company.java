@@ -10,6 +10,7 @@ public class Company {
     private double goalPower;               // The goal power production
     private double money;                   // The money held by the company
     private double credits;                 // The number of carbon credits held by the company
+    private String usedPlants;              // The plants used in the most recent tick
 
     /**
      * Constructor
@@ -56,14 +57,28 @@ public class Company {
         float powerProduced = 0;
         float emissions = 0;
         holdings.sort(new RevenueSorter());
+        StringBuilder sb = new StringBuilder();
         for (PowerType holding: holdings) {
             powerProduced += holding.getEnergyProduced();
             emissions += holding.getEmissions();
+            sb.append(holding.getTypeMinimal());
             if (powerProduced >= goalPower) {
 //                System.out.println("Enough power.");
                 break;
             }
         }
+        usedPlants = sb.toString();
         return emissions;
     }
+
+    public String getUsedPlants() {
+        return usedPlants;
+    }
+
+    public String showHoldings() {
+        StringBuilder sb = new StringBuilder();
+        for (PowerType holding: holdings) sb.append(holding.getTypeMinimal());
+        return sb.toString();
+    }
+
 }

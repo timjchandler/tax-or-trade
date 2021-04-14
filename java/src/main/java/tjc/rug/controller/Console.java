@@ -8,8 +8,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.apache.commons.io.IOUtils;
-import tjc.rug.model.Power;
-import tjc.rug.model.PowerType;
 import tjc.rug.model.World;
 
 import java.io.IOException;
