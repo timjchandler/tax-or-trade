@@ -43,13 +43,14 @@ public class Company {
      * then passes to the argument free method.
      * @param tax   The new tax rate
      */
-    public void tickTax(float tax) {
+    public float tickTax(float tax) {
         for (PowerType holding: holdings) holding.setCurrentRevenue(tax);
-        tickTax();
+        return tickTax();
     }
 
     /**
      * Overloaded method to implement a tick of one time unit. Picks the cheapest method of generating power.
+     * TODO: Oversimplified at present - no incentive not to use wind every time: only shows gas/coal difference
      */
     public float tickTax() {
         float powerProduced = 0;
@@ -58,7 +59,10 @@ public class Company {
         for (PowerType holding: holdings) {
             powerProduced += holding.getEnergyProduced();
             emissions += holding.getEmissions();
-            if (powerProduced >= goalPower) break;
+            if (powerProduced >= goalPower) {
+//                System.out.println("Enough power.");
+                break;
+            }
         }
         return emissions;
     }

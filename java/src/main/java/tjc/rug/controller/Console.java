@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import org.apache.commons.io.IOUtils;
 import tjc.rug.model.Power;
 import tjc.rug.model.PowerType;
+import tjc.rug.model.World;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -126,6 +127,14 @@ public class Console {
                 break;
             case "help":
                 print(help);
+                break;
+            case "new-world":
+                new World(100, 0.1f, 0.3f);
+                Console.print(":: Setting up World ...");
+                break;
+            case "run-world":
+                Console.print(":: Running World ...");
+                World.run();
                 break;
             case "":
                 break;

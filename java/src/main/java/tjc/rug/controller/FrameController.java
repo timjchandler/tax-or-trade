@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import tjc.rug.model.World;
 
 import java.io.IOException;
 import java.net.URL;
@@ -96,7 +97,8 @@ public class FrameController implements Initializable {
     }
 
     public static void restartRun() {
-        Console.print(":: Restart");
+        new World(100, 0.1f, 0.3f);
+        Console.print(":: Setting up World ...");
     }
 
     public static void stopRun() {
@@ -104,7 +106,8 @@ public class FrameController implements Initializable {
     }
 
     public static void startRun() {
-        Console.print(":: Start");
+        Console.print(":: Running World ...");
+        World.run();
     }
 
     public  void goHome() {

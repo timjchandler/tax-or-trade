@@ -34,6 +34,8 @@ public class PowerType {
         return carbonProduced;
     }
 
+    // https://www.e-education.psu.edu/eme801/node/530 < Shows power building/operating costs
+
     public PowerType(Type type, float energy, float carbon, float runningCost, float idleCost) {
         this.type = type;
 //        setRange();
