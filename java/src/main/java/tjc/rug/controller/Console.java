@@ -7,12 +7,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.apache.commons.io.IOUtils;
 import tjc.rug.model.World;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class Console {
@@ -38,12 +34,12 @@ public class Console {
     }
 
     private void setHelp() {
-        InputStream helpStream = getClass().getResourceAsStream("/media/help.txt");
-        try {
-            help = IOUtils.toString(helpStream, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        InputStream helpStream = getClass().getResourceAsStream("/media/help.txt");
+//        try {
+//            help = IOUtils.toString(helpStream, StandardCharsets.UTF_8);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void initConsole(VBox consoleArea) {

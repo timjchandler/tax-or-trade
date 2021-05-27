@@ -5,12 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>groupId</groupId>
-    <artifactId>carbon-tax-or-trade</artifactId>
-    <version>1.0</version>
+    <artifactId>java</artifactId>
+    <version>PROTOTYPE</version>
 
     <properties>
-        <java.version>11.0.10</java.version>
-        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.release>14</maven.compiler.release>
         <javafx.version>15.0.1</javafx.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -32,57 +31,54 @@
             <artifactId>javafx-graphics</artifactId>
         <version>${javafx.version}</version>
         </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.8.0</version>
-        </dependency>
-        <!--        May not be needed-->
-<!--        <dependency>-->
-<!--            <groupId>org.openjfx</groupId>-->
-<!--            <artifactId>javafx-swing</artifactId>-->
-<!--            <version>11</version>-->
-<!--        </dependency>-->
     </dependencies>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.8.0</version>
                 <configuration>
-                    <verbose>true</verbose>
-                    <compilerVersion>11</compilerVersion>
+                    <release>14</release>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.3</version>
-                <configuration>
-                    <mainClass>tjc.rug.CarbonMain</mainClass>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-                <configuration>
-                    <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <mainClass>tjc.rug.CarbonMain</mainClass>
-                        </transformer>
-                    </transformers>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.openjfx</groupId>-->
+<!--                <artifactId>javafx-maven-plugin</artifactId>-->
+<!--                <version>0.0.3</version>-->
+<!--                <configuration>-->
+<!--                    <mainClass>tjc.rug.CarbonMain</mainClass>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <version>3.2.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals><goal>shade</goal></goals>-->
+<!--                        <configuration>-->
+<!--                            <transformers>-->
+<!--                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+<!--                                    <mainClass>tjc.rug.CarbonMain</mainClass>-->
+<!--                                </transformer>-->
+<!--                            </transformers>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
+<!--        <resources>-->
+<!--            <resource>-->
+<!--                <directory>src/main/resources</directory>-->
+<!--                <includes>-->
+<!--                    <include>**/fxml/*</include>-->
+<!--                    <include>**/css/*</include>-->
+<!--                    <include>**/media/*</include>-->
+<!--                </includes>-->
+<!--                <filtering>false</filtering>-->
+<!--            </resource>-->
+<!--        </resources>-->
     </build>
+
 </project>

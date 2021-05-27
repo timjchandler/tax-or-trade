@@ -3,7 +3,7 @@ module tjc.rug {
     requires java.desktop;
     requires javafx.graphics;
     requires javafx.controls;
-    requires org.apache.commons.io;
+//    requires org.apache.commons.io;
 
     opens tjc.rug;
     opens tjc.rug.controller;
