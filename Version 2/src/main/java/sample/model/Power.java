@@ -1,21 +1,68 @@
 package sample.model;
 
-public class Power {
+public class Power extends Randomiser {
 
-    private enum Type { GAS, WIND, COAL, NUCLEAR };
+    private PowerType type;     // The type of power (Coal, gas, wind, nuclear)
+    private float runningCost;  // The running cost of the power plant
+    private float idleCost;     // The upkeep cost when not running the plant
+    private float production;   // The amount of power produced
+    private float carbon;       // The amount of carbon produced
 
-    private Type type;
-    private float runningCost;
-    private float idleCost;
-    private float production;
-
-    public Power(int value) {
-        if (value < 0.5) this.type = Type.COAL;
-        if (value >= 0.5) this.type = Type.WIND;
+    /**
+     * Constructor, sets the power type and calls the initialise method
+     * @param type      The power type used by this power object
+     */
+    public Power(PowerType type) {
+        this.type = type;
         initPower();
     }
 
+    /**
+     * Initialise the object. Sets the running cost, production amount and idle cost for
+     * the object taking values randomly from the normal curves for each variable
+     */
     private void initPower() {
+        this.runningCost = getNormal(type.getMeanCost(), type.getSdCost());
+        this.production = getNormal(type.getMeanPower());
+        this.idleCost = runningCost * type.getUpkeepWeight();
+        this.carbon = production * getNormal(type.getMeanCarbon());
+    }
 
+    public float calculateIncome(float tax) {
+        return production * World.getEnergyPrice() - carbon * tax;
+    }
+
+    /**
+     * Decays the cost of running the plant on idle. Will not reduce the idle cost below
+     * 10% of running cost
+     */
+    public void decayIdle() {
+        if (idleCost > runningCost * 0.1f) idleCost *= 0.9;
+    }
+
+    // Getters
+    public PowerType getType() {
+        return type;
+    }
+
+    public float getRunningCost() {
+        return runningCost;
+    }
+
+    public float getIdleCost() {
+        return idleCost;
+    }
+
+    public float getProduction() {
+        return production;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(type.toString());
+        sb.append("\tRunning Cost: ").append(runningCost);
+        sb.append("\tIdle cost: ").append(idleCost);
+        sb.append("\tProduction: ").append(production);
+        return sb.toString();
     }
 }
