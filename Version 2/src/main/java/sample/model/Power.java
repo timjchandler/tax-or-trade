@@ -24,12 +24,16 @@ public class Power extends Randomiser {
     private void initPower() {
         this.runningCost = getNormal(type.getMeanCost(), type.getSdCost());
         this.production = getNormal(type.getMeanPower());
-        this.idleCost = runningCost * type.getUpkeepWeight();
         this.carbon = production * getNormal(type.getMeanCarbon());
+        resetIdle();
     }
 
     public float calculateIncome(float tax) {
-        return production * World.getEnergyPrice() - carbon * tax;
+        return production * World.getEnergyPrice() - carbon * tax - runningCost;
+    }
+
+    public float calculateRunningIdleDifference(float tax) {
+        return calculateIncome(tax) + idleCost;
     }
 
     /**
@@ -38,6 +42,13 @@ public class Power extends Randomiser {
      */
     public void decayIdle() {
         if (idleCost > runningCost * 0.1f) idleCost *= 0.9;
+    }
+
+    /**
+     * Resets the idle cost to the default value
+     */
+    public void resetIdle() {
+        idleCost = runningCost * type.getUpkeepWeight();
     }
 
     // Getters
