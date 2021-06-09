@@ -1,7 +1,6 @@
 package sample.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Agent {
 
@@ -42,7 +41,7 @@ public class Agent {
     public void update(int tick, float tax) {
         if (tick == this.tick) return;
         this.tick = tick;
-        Collections.sort(power, (o1, o2) -> Float.compare(o1.calculateIncome(tax), o2.calculateIncome(tax)));
+        power.sort((o1, o2) -> Float.compare(o1.calculateIncome(tax), o2.calculateIncome(tax)));
         electricity = 0;
         int idx = 0;
         // TODO: This currently sorts exclusively on income, disregarding the idle costs - could be worth changing
@@ -75,5 +74,17 @@ public class Agent {
         sb.append("-| ID: ").append(id).append("\n");
         for (Power p: power) sb.append(" |- ").append(p.toString()).append("\n");
         System.out.println(sb.toString());
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public int getTick() {
+        return tick;
     }
 }
