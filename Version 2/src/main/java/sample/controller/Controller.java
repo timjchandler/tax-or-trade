@@ -50,10 +50,16 @@ public class Controller implements Initializable{
     }
 
     private void initMenu() {
+        MenuController mc = new MenuController(this);
         Button start = new Button("Start");
-        start.setOnAction(new MenuController(this));
+        start.setOnAction(mc);
         start.getStylesheets().add("css/mainMenu.css");
+        Button seed = new Button("Set seed");
+        seed.setOnAction(mc);
+        seed.getStylesheets().add("css/mainMenu.css");
+
         this.menuBar.getChildren().add(start);
+        this.menuBar.getChildren().add(seed);
     }
 
     @FXML
@@ -77,9 +83,8 @@ public class Controller implements Initializable{
         System.out.println("::CONTROLLER:: World set");
     }
 
-    public void updateBottomText(String text) {
-        System.out.println("::CONTROLLER:: Updating bottom text");
-        bottomText.setText(text);
+    public void updateBottomText() {
+        bottomText.setText("CSV file saved in:\t" + world.getSaveLocation());
     }
 
     @Override

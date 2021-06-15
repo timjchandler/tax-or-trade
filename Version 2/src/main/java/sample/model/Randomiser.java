@@ -10,7 +10,7 @@ public abstract class Randomiser {
      * Sets the seed for the random number generation
      * @param seed  The seed to be set
      */
-    void setSeed(int seed) {
+    public static void setSeed(int seed) {
         random = new Random(seed);
     }
 

@@ -13,7 +13,7 @@ public class World extends Randomiser {
     private float cap;
     private double powerReq;
     private int tick;
-    private int seed;
+    private static int seed;
     private File saveFile;
     private PowerSplit split;
     private int startingMoney;
@@ -167,5 +167,10 @@ public class World extends Randomiser {
         System.out.println("::WORLD:: Start");
         buildWorld(100);    // TODO actual value
         tick();
+    }
+
+    @Override
+    public static void setSeed(int seed) {
+
     }
 }
