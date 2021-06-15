@@ -28,13 +28,19 @@ public class Power extends Randomiser {
         resetIdle();
     }
 
+    /**
+     * Returns the potential income from this power plant based on the current tax
+     * rate and the carbon emission factor of the power plant
+     * @param tax   The current tax rate
+     * @return      The potential income
+     */
     public float calculateIncome(float tax) {
         return production * World.getEnergyPrice() - carbon * tax - runningCost;
     }
 
-    public float calculateRunningIdleDifference(float tax) {
-        return calculateIncome(tax) + idleCost;
-    }
+//    public float calculateRunningIdleDifference(float tax) {
+//        return calculateIncome(tax) - idleCost;
+//    }
 
     /**
      * Decays the cost of running the plant on idle. Will not reduce the idle cost below

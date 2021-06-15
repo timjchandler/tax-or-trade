@@ -1,5 +1,7 @@
 package sample.model;
 
+import sample.controller.Controller;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -17,6 +19,7 @@ public class World extends Randomiser {
     private int startingMoney;
     private int agentCount;
     private static float energyPrice;
+    private Controller controller;
 
     public World(int seed) {
         this.tick = 0;
@@ -26,8 +29,6 @@ public class World extends Randomiser {
         split = new PowerSplit();
         energyPrice = 1;                    // TODO update this
         agentCount = 30;
-        buildWorld(100);          // TODO find actual values, update both this and the power type values
-        for (Agent a: agents) a.printPower();
         setFile();
     }
 
@@ -39,6 +40,9 @@ public class World extends Randomiser {
         return energyPrice;
     }
 
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
 
     /**
      * Generates power plants until a total energy production is met. Assigns these plants to
@@ -146,7 +150,22 @@ public class World extends Randomiser {
     public void tick() {
         if (tick == 0) saveCSV();
         this.tick++;
+        controller.updateTick(tick);
         updateAgents();
         saveCSV();
+    }
+
+    public String getSaveLocation() {
+        return saveFile.getAbsolutePath();
+    }
+
+    public Controller getController() {
+        return controller;
+    }
+
+    public void start() {
+        System.out.println("::WORLD:: Start");
+        buildWorld(100);    // TODO actual value
+        tick();
     }
 }
