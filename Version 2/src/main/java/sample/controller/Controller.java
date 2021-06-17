@@ -15,10 +15,7 @@ import sample.model.World;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable{
-
-    private static World world;
-    private boolean initialised = false;
+public class Controller extends AbstractController implements Initializable {
 
     @FXML
     private VBox menuBar;
@@ -46,20 +43,25 @@ public class Controller implements Initializable{
         topInfoB.setEditable(false);
         topInfoC.setEditable(false);
         initMenu();
-        world.setController(this);
+        setMainController(this);
+        getWorld().setController(this);
     }
 
     private void initMenu() {
-        MenuController mc = new MenuController(this);
+        MenuController mc = new MenuController();
         Button start = new Button("Start");
         start.setOnAction(mc);
         start.getStylesheets().add("css/mainMenu.css");
-        Button seed = new Button("Set seed");
+        Button seed = new Button("Set Seed");
         seed.setOnAction(mc);
         seed.getStylesheets().add("css/mainMenu.css");
+        Button parameters = new Button("Set Parameters");
+        parameters.setOnAction(mc);
+        parameters.getStylesheets().add("css/mainMenu.css");
 
         this.menuBar.getChildren().add(start);
         this.menuBar.getChildren().add(seed);
+        this.menuBar.getChildren().add(parameters);
     }
 
     @FXML
@@ -78,13 +80,11 @@ public class Controller implements Initializable{
     }
 
     public static void setWorld(World world) {
-        Controller.world = world;
-        MenuController.setWorld(world);
-        System.out.println("::CONTROLLER:: World set");
+        AbstractController.setWorld(world);
     }
 
     public void updateBottomText() {
-        bottomText.setText("CSV file saved in:\t" + world.getSaveLocation());
+        bottomText.setText("CSV file saved in:\t" + getWorld().getSaveLocation());
     }
 
     @Override

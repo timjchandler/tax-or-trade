@@ -6,12 +6,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import sample.model.World;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SeedController implements Initializable {
+public class SeedController extends AbstractController implements Initializable {
 
     @FXML
     private TextField valueBox;
@@ -21,13 +19,11 @@ public class SeedController implements Initializable {
 
     @FXML
     void cancel(ActionEvent event) {
-        System.out.println("::POPUP:: Cancel");
         ((Stage) valueBox.getScene().getWindow()).close();
     }
 
     @FXML
     void setSeed(ActionEvent event) {
-        System.out.println("::POPUP:: Set seed");
         int newSeed;
         try {
             newSeed = Integer.parseInt(valueBox.getText());
@@ -35,8 +31,8 @@ public class SeedController implements Initializable {
             this.errorPrompt.setVisible(true);
             return;
         }
-        World.setSeed(newSeed);
-        Controller.updateBottomText();
+        getWorld().updateSeed(newSeed);
+        getMainController().updateBottomText();
         cancel(event);
     }
 

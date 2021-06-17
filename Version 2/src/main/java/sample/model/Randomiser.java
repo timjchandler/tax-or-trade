@@ -5,12 +5,14 @@ import java.util.Random;
 public abstract class Randomiser {
 
     private static Random random = null;
+    private static int seed;
 
     /**
      * Sets the seed for the random number generation
      * @param seed  The seed to be set
      */
     public static void setSeed(int seed) {
+        Randomiser.seed = seed;
         random = new Random(seed);
     }
 
@@ -70,5 +72,7 @@ public abstract class Randomiser {
         return random.nextInt(max);
     }
 
-
+    public static int getSeed() {
+        return seed;
+    }
 }

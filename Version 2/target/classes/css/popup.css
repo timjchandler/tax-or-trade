@@ -1,0 +1,12 @@
+.button {
+    -fx-pref-width: 115;
+    -fx-pref-height: 35;
+}
+
+.button-cancel {
+    -fx-background-position: bottom left;
+}
+
+.button-accept {
+    -fx-background-position: bottom right;
+}

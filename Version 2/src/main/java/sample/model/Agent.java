@@ -5,20 +5,16 @@ import java.util.ArrayList;
 public class Agent {
 
     private final int id;
-    private int money;
-    private float carbon;
-    private float electricity;
     private int goal;
     private final ArrayList<Power> power;
     private int tick;
     private int credits;
     private float required;
+    private AgentStats stats;
 
     public Agent(int id, int initialMoney, int tick) {
         this.id = id;
-        this.money = initialMoney;
-        this.carbon = 0;
-        this.electricity = 0;
+        this.stats = new AgentStats(initialMoney);
         this.tick = tick;
         this.power = new ArrayList<>();
     }
@@ -41,31 +37,30 @@ public class Agent {
     public void update(int tick, float tax) {
         if (tick == this.tick) return;
         this.tick = tick;
-        power.sort((o1, o2) -> Float.compare(o1.calculateIncome(tax), o2.calculateIncome(tax)));
-        electricity = 0;
-        int idx = 0;
         // TODO: This currently sorts exclusively on income, disregarding the idle costs - could be worth changing
-        while (electricity < required) {
-            electricity += power.get(idx).getProduction();
-            money += power.get(idx).calculateIncome(tax);
+        //       - Note this has been left as is for now
+        power.sort((o1, o2) -> Float.compare(o1.calculateIncome(tax), o2.calculateIncome(tax)));
+        stats.updateElectricity(0);
+        int idx = 0;
+
+        while (stats.getElectricityTick() < required) {
+            stats.updateElectricity(power.get(idx).getProduction());
+            stats.updateMoney(power.get(idx).calculateIncome(tax));
+            stats.updateCarbon(power.get(idx).getCarbon());
             power.get(idx).resetIdle();
             idx++;
         }
         for (; idx < power.size() ; ++idx) {
             power.get(idx).decayIdle();
-            money  -= power.get(idx).getIdleCost();
+            stats.updateMoney(-1 * power.get(idx).getIdleCost());
         }
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(id).append(',');
-        sb.append(money).append(',');
-        sb.append(carbon).append(',');
-        sb.append(electricity).append(',');
-        sb.append("n/a").append(',');       // TODO: Should hold a value or be removed
-        sb.append(tick);
+        StringBuilder sb = new StringBuilder(String.valueOf(id));
+        sb.append(',').append(tick);
+        sb.append(',').append(stats.tickToSring());
         return sb.toString();
     }
 
@@ -80,8 +75,8 @@ public class Agent {
         return id;
     }
 
-    public int getMoney() {
-        return money;
+    public float getMoney() {
+        return stats.getMoneyTot();
     }
 
     public int getTick() {

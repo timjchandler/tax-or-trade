@@ -38,10 +38,6 @@ public class Power extends Randomiser {
         return production * World.getEnergyPrice() - carbon * tax - runningCost;
     }
 
-//    public float calculateRunningIdleDifference(float tax) {
-//        return calculateIncome(tax) - idleCost;
-//    }
-
     /**
      * Decays the cost of running the plant on idle. Will not reduce the idle cost below
      * 10% of running cost
@@ -81,5 +77,9 @@ public class Power extends Randomiser {
         sb.append("\tIdle cost: ").append(idleCost);
         sb.append("\tProduction: ").append(production);
         return sb.toString();
+    }
+
+    public float getCarbon() {
+        return carbon;
     }
 }

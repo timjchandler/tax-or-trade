@@ -16,11 +16,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Version 2" />
+        <module name="TaxOrTrade" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Version 2" target="8" />
+      <module name="TaxOrTrade" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

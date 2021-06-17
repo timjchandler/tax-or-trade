@@ -13,17 +13,16 @@ public class World extends Randomiser {
     private float cap;
     private double powerReq;
     private int tick;
-    private static int seed;
     private File saveFile;
     private PowerSplit split;
     private int startingMoney;
     private int agentCount;
     private static float energyPrice;
     private Controller controller;
+    private float requiredElectricity = 0;
 
     public World(int seed) {
         this.tick = 0;
-        this.seed = seed;
         setSeed(seed);
         agents = new ArrayList<>();
         split = new PowerSplit();
@@ -116,12 +115,13 @@ public class World extends Randomiser {
      * Set the output file for storing the csv
      */
     private void setFile() {
-        saveFile = new File("seed-" + seed + ".csv");
+        saveFile = new File("seed-" + getSeed() + ".csv");
         if(saveFile.exists()){
             saveFile.delete();
         }
         try {
             saveFile.createNewFile();
+            System.out.println(":: New save file - " + saveFile.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,7 +133,7 @@ public class World extends Randomiser {
      */
     private String stateToCSVString() {
         StringBuilder sb = new StringBuilder();
-        if (tick == 0) sb.append("ID,Money,Carbon,Electricity,Type,Tick\n");
+        if (tick == 0) sb.append("ID,Tick,Electricity,Carbon,Money\n");
         for (Agent agent: agents)
             sb.append(agent.toString()).append("\n");
         return sb.toString();
@@ -165,12 +165,20 @@ public class World extends Randomiser {
 
     public void start() {
         System.out.println("::WORLD:: Start");
-        buildWorld(100);    // TODO actual value
+        buildWorld(requiredElectricity > 0 ? requiredElectricity : 100);    // TODO actual value
         tick();
     }
 
-    @Override
-    public static void setSeed(int seed) {
+    /**
+     * Updates the seed in Randomiser, updates the save file name
+     * @param seed  The new seed to be set
+     */
+    public void updateSeed(int seed) {
+        setSeed(seed);
+        setFile();
+    }
 
+    public void setRequiredElectricity(float electricity) {
+        this.requiredElectricity = electricity;
     }
 }

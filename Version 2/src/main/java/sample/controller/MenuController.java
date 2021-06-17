@@ -9,18 +9,11 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sample.Main;
-import sample.model.World;
 
 import java.io.IOException;
 import java.util.Objects;
 
-public class MenuController implements EventHandler {
-    private static World world;
-    private Controller controller;
-
-    public MenuController(Controller controller) {
-        this.controller = controller;
-    }
+public class MenuController extends AbstractController implements EventHandler {
 
     @Override
     public void handle(Event event) {
@@ -29,9 +22,24 @@ public class MenuController implements EventHandler {
             case "Start":
                 start();
                 break;
-            case "Set seed":
+            case "Set Seed":
                 seed();
                 break;
+            case "Set Parameters":
+                initialValues();
+                break;
+        }
+    }
+
+    private void initialValues() {
+        Stage dialogue = new Stage(StageStyle.UNDECORATED);
+        dialogue.initOwner(Main.getPrimaryStage());
+        try {
+            Parent box = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/ParametersPopup.fxml")));
+            dialogue.setScene(new Scene(box, 300, 350));
+            dialogue.show();
+        } catch (IOException e) {
+            System.out.println("::ERROR:: Menu Controller - cannot load ParametersPopup.fxml");
         }
     }
 
@@ -49,11 +57,7 @@ public class MenuController implements EventHandler {
     }
 
     private void start() {
-        controller.updateBottomText();
-        world.start();
-    }
-
-    public static void setWorld(World world) {
-        MenuController.world = world;
+        getMainController().updateBottomText();
+        getWorld().start();
     }
 }

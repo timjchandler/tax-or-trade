@@ -2,7 +2,7 @@ package sample.model;
 
 /**
  * Enum storing types of power plant. Includes:
- * "WIND"   - representative of wind, hydro, and solar power.
+ * "WIND"   - representative of wind, hydro, and solar power. Assumed to be a farm of roughly 50 turbines or equivalent
  * "GAS"    - representative of natural and derived gas power plants.
  * "COAL"   - representative of coal and lignite power plants - this has been expanded to include oil for simplicity - the difference in generation between the two is negligible when compared to the other types of power.
  * "NUCLEAR"- representative of only nuclear power plants
@@ -11,17 +11,20 @@ package sample.model;
  */
 public enum PowerType {
 
-    WIND        (1, 0, 0.01f, 0, 0.0f, 0.0f),     // TODO: replace placeholder
-    GAS         (2, 0, 0.41f, 0, 0.5f, 0.5f),     // TODO: replace placeholder
-    COAL        (3, 0, 1.00f, 0, 0.5f, 1.0f),     // TODO: replace placeholder
-    NUCLEAR     (5, 0, 5, 0, 0.6f, 0.1f);     // TODO: replace placeholder
+    // TODO standard deviations and upkeep
+    WIND        (5, 0, 2000, 0, 0.3f, 0.0f),        // TODO: correct cost!!!
+    GAS         (50, 0, 1000, 0, 0.5f, 0.41f),      // TODO: double check meanP
+    COAL        (67, 0, 3500, 0, 0.5f, 1.0f),
+    NUCLEAR     (150, 0, 6000, 0, 0.6f, 0.1f);
 
-    private final float meanPower;      // The mean power produced by this type
+    // COSTS: https://www.eia.gov/outlooks/aeo/assumptions/pdf/table_8.2.pdf
+
+    private final float meanPower;      // The mean power produced by this type in Gigawatt Hours (GWH) / week
     private final float sdPower;        // The standard deviation of power produced by this type
-    private final float meanCost;       // The mean cost of running this plant
+    private final float meanCost;       // The mean cost of running this plant per KW
     private final float sdCost;         // The standard deviation of the running cost
     private final float upkeepWeight;   // The portion of the running cost needed for upkeep when not running
-    private final float meanCarbon;
+    private final float meanCarbon;     // The mean CO2 produced per GWH
 
     /**
      * Constructor
