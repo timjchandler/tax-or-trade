@@ -1,0 +1,20 @@
+﻿Annual Net emissions/removals 
+Query results for — Party: Annex I | Year: Last Inventory Year (2018) | Category: Total GHG emissions without LULUCF including indirect CO₂ and 4 other(s) | Classification: Total for category | Type of value: Net emissions/removals | Gas: CO₂ | Unit: kt and 2 other(s)
+
+ ,Year,Last Inventory Year (2018),Last Inventory Year (2018),Last Inventory Year (2018)
+Party,Category \ Unit,kt,t CO₂ equivalent,kt CO₂ equivalent
+Annex I,Total GHG emissions without LULUCF including indirect CO₂,1582375.9059524674,1582375905.9524674,1582375.9059524674
+Annex I,Total GHG emissions with LULUCF including indirect CO₂,2093720.798947453,2093720798.947453,2093720.798947453
+Annex I,Total GHG emissions without LULUCF,13530372.542324822,13530372542.324821,13530372.542324822
+Annex I,Total GHG emissions with LULUCF,11526619.05604783,11526619056.04783,11526619.05604783
+Annex I,1.A.1.a.i  Electricity Generation,2335279.699125839,2335279699.1258388,2335279.699125839
+
+
+Note 1: The reporting and review requirements for GHG inventories are different for Annex I and non-Annex I Parties. The definition format of data for emissions/removals from the forestry sector is different for Annex I and non-Annex I Parties.
+Note 2: Base year data in the data interface relate to the base year under the Climate Change Convention (UNFCCC).  The base year under the Convention is defined slightly different than the base year under the Kyoto Protocol.  An exception is made for European Union (KP) whereby the base year under the Kyoto Protocol is displayed.
+"Note 3: – means ""No data available"""
+"Note 4: Data displayed on the data interface are ""as received"" from Parties. The publication of Party submissions on this website does not imply the expression of any opinion whatsoever on the part of the UNFCCC or the Secretariat of the United Nations concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries as may be referred to in any of the submissions."
+
+Source: UNFCCC GHG Data Interface
+
+"Report produced on Wednesday, 9 June 2021, 12:48:36 CEST"
