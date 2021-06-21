@@ -9,11 +9,10 @@ public class AgentStats {
     private float moneyTick;
     private float electricityTick;
 
-    public AgentStats(float initialMoney) {
+    public AgentStats() {
         carbonTot = carbonTick = 0;
         electricityTot = electricityTick = 0;
         moneyTick = 0;
-        moneyTot = initialMoney;
     }
 
     public void updateElectricity(float value) {
@@ -29,6 +28,10 @@ public class AgentStats {
     public void updateMoney(float value) {
         moneyTick = value;
         moneyTot += value;
+    }
+
+    public void setMoneyTot(float moneyTot) {
+        this.moneyTot = moneyTot;
     }
 
     public float getCarbonTot() {
@@ -63,6 +66,7 @@ public class AgentStats {
         StringBuilder sb = new StringBuilder(String.valueOf(electricityTick));
         sb.append(',').append(carbonTick);
         sb.append(',').append(moneyTick);
+        sb.append(',').append(moneyTot);
         return sb.toString();
     }
 }

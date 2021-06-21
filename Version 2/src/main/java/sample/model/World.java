@@ -18,7 +18,6 @@ public class World extends Randomiser {
     private int agentCount;                 // The number of agents
     private final ArrayList<Agent> agents;  // The list of agents
     private boolean isTaxNotTrade = true;   // The type of simulation: true for tax, false for cap and trade
-    private float startingMoney = 100;      // TODO: SET THIS PROPERLY
     private int totalTicks = 104;           // The total ticks to run for 104 (2 years) if not set
 
     // The following member variables relate to the tick updates
@@ -26,10 +25,11 @@ public class World extends Randomiser {
     private float taxIncrement;                 // The yearly multiplier to increase/decrease tax
     private float cap;                          // The current cap on carbon emissions
     private float capIncrement;                 // The yearly multiplier to increase/decrease the cap
-    private float requiredElectricity = 0;      // The electricity required per tick
+    private float requiredElectricity = 7671;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
     private float electricityIncrement = 1.03f; // The yearly multiplier to increase/decrease the electricity requirement
     private int tick;                           // The current tick
-    private static float energyPrice;           // The price money gained from producing electricity
+    private static float energyPrice = 213400f; // The money gained from producing electricity, set as eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
+
 
     public World(int seed) {
         this.tick = 0;
@@ -55,13 +55,14 @@ public class World extends Randomiser {
      * @param total The total power to generate
      * @param type  The type of power to generate
      */
-    private void setupPower(float total, PowerType type) {
+    private float setupPower(float total, PowerType type) {
         float set = 0;
         while (set < total) {
             Power power = new Power(type);
             set += power.getProduction();
             agents.get(getInt(agentCount)).addPower(power);
         }
+        return set;
     }
 
     /**
@@ -69,11 +70,16 @@ public class World extends Randomiser {
      * @param totalEnergy   The total energy to generate between all plants - NOTE: this is the total energy that can be produced, not the energy required per tick
      */
     private void buildWorld(float totalEnergy) {
+        totalEnergy *= 1.5f;
         createAgents(agentCount);
-        setupPower(totalEnergy * split.getCoal(), PowerType.COAL);
-        setupPower(totalEnergy * split.getGas(), PowerType.GAS);
-        setupPower(totalEnergy * split.getWind(), PowerType.WIND);
-        setupPower(totalEnergy * split.getNuclear(), PowerType.NUCLEAR);
+        float set = 0;
+        set += setupPower(totalEnergy * split.getCoal(), PowerType.COAL);
+        set += setupPower(totalEnergy * split.getGas(), PowerType.GAS);
+        set += setupPower(totalEnergy * split.getWind(), PowerType.WIND);
+        set += setupPower(totalEnergy * split.getNuclear(), PowerType.NUCLEAR);
+        System.out.println("TOTAL: " + totalEnergy + "\tSET: " + set);
+        float baseMoney = 5 * set * energyPrice / agentCount;
+        for (Agent agent: agents) agent.setStartMoney(getNormal(baseMoney));
     }
 
     /**
@@ -92,7 +98,7 @@ public class World extends Randomiser {
      */
     public void createAgents(int count) {
         for (int idx = 0; idx < count; ++idx) {
-            Agent agent = new Agent(idx, getNormal(startingMoney), tick);
+            Agent agent = new Agent(idx, tick);
             addAgent(agent);
         }
     }
@@ -102,7 +108,7 @@ public class World extends Randomiser {
      */
     public void updateAgents() {
         for (Agent agent: agents)
-            agent.update(tick, taxRate);
+            agent.update(tick, taxRate, energyPrice);
     }
 
     public void saveCSV() {
@@ -123,7 +129,7 @@ public class World extends Randomiser {
      */
     private String stateToCSVString() {
         StringBuilder sb = new StringBuilder();
-        if (tick == 0) sb.append("ID,Tick,Electricity,Carbon,Money\n");
+        if (tick == 0) sb.append("ID,Tick,Electricity,Carbon,MoneyTick,MoneyTotal\n");
         for (Agent agent: agents)
             sb.append(agent.toString()).append("\n");
         return sb.toString();

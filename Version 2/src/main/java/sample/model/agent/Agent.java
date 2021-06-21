@@ -14,9 +14,9 @@ public class Agent {
     private float required;
     private AgentStats stats;
 
-    public Agent(int id, float initialMoney, int tick) {
+    public Agent(int id, int tick) {
         this.id = id;
-        this.stats = new AgentStats(initialMoney);
+        this.stats = new AgentStats();
         this.tick = tick;
         this.power = new ArrayList<>();
     }
@@ -36,7 +36,7 @@ public class Agent {
      * @param tick  The current tick
      * @param tax   The current tax rate
      */
-    public void update(int tick, float tax) {
+    public void update(int tick, float tax, float electricityPrice) {
         if (tick == this.tick) return;
         this.tick = tick;
         // TODO: This currently sorts exclusively on income, disregarding the idle costs - could be worth changing
@@ -71,6 +71,10 @@ public class Agent {
         sb.append("-| ID: ").append(id).append("\n");
         for (Power p: power) sb.append(" |- ").append(p.toString()).append("\n");
         System.out.println(sb.toString());
+    }
+
+    public void setStartMoney(float initialMoney) {
+        stats.setMoneyTot(initialMoney);
     }
 
     public int getId() {

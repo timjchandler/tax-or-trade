@@ -25,9 +25,9 @@ public class Power extends Randomiser {
      * the object taking values randomly from the normal curves for each variable
      */
     private void initPower() {
-        this.runningCost = getNormal(type.getMeanCost(), type.getSdCost());
         this.production = getNormal(type.getMeanPower());
-        this.carbon = production * getNormal(type.getMeanCarbon());
+        this.runningCost = getNormal(type.getMeanCost(), 0) * this.production;
+        this.carbon = production * getNormal(type.getMeanCarbon()) * this.production;
         resetIdle();
     }
 
