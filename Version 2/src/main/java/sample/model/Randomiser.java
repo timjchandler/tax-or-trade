@@ -2,6 +2,10 @@ package sample.model;
 
 import java.util.Random;
 
+/**
+ * Abstract class to facilitate the generation of random numbers across classes whilst maintaining a single seed value
+ * Generates random integer values or floats from a normal distribution, making use of the Random library.
+ */
 public abstract class Randomiser {
 
     private static Random random = null;
@@ -72,6 +76,10 @@ public abstract class Randomiser {
         return random.nextInt(max);
     }
 
+    /**
+     * Getter for the seed value
+     * @return The current seed
+     */
     public static int getSeed() {
         return seed;
     }

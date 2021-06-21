@@ -1,4 +1,4 @@
-package sample.model;
+package sample.model.power;
 
 /**
  * Enum storing types of power plant. Includes:

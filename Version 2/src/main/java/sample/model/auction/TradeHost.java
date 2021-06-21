@@ -1,4 +1,4 @@
-package sample.model;
+package sample.model.auction;
 
 public class TradeHost {
 

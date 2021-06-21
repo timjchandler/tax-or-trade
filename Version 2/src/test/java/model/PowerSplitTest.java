@@ -2,7 +2,7 @@ package model;
 
 import org.junit.Assert;
 import org.junit.Test;
-import sample.model.PowerSplit;
+import sample.model.power.PowerSplit;
 
 public class PowerSplitTest {
 

@@ -2,9 +2,9 @@ package model;
 
 import org.junit.Assert;
 import org.junit.Test;
-import sample.model.Agent;
-import sample.model.Power;
-import sample.model.PowerType;
+import sample.model.agent.Agent;
+import sample.model.power.Power;
+import sample.model.power.PowerType;
 
 public class AgentTest {
 

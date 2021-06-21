@@ -1,4 +1,4 @@
-package sample.model;
+package sample.model.power;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -88,7 +88,7 @@ public class PowerSplit {
 
     // Getters
 
-    float getGas() {
+    public float getGas() {
         return gas;
     }
 

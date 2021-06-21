@@ -1,4 +1,4 @@
-package sample.model;
+package sample.model.agent;
 
 public class AgentStats {
 

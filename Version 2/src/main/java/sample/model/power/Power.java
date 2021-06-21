@@ -1,12 +1,15 @@
-package sample.model;
+package sample.model.power;
+
+import sample.model.Randomiser;
+import sample.model.World;
 
 public class Power extends Randomiser {
 
-    private PowerType type;     // The type of power (Coal, gas, wind, nuclear)
-    private float runningCost;  // The running cost of the power plant
-    private float idleCost;     // The upkeep cost when not running the plant
-    private float production;   // The amount of power produced
-    private float carbon;       // The amount of carbon produced
+    private final PowerType type;   // The type of power (Coal, gas, wind, nuclear)
+    private float runningCost;      // The running cost of the power plant
+    private float idleCost;         // The upkeep cost when not running the plant
+    private float production;       // The amount of power produced
+    private float carbon;           // The amount of carbon produced
 
     /**
      * Constructor, sets the power type and calls the initialise method
@@ -53,23 +56,50 @@ public class Power extends Randomiser {
         idleCost = runningCost * type.getUpkeepWeight();
     }
 
-    // Getters
+    /**
+     * Gets the type of power generation
+     * @return The power type
+     */
     public PowerType getType() {
         return type;
     }
 
+    /**
+     * Gets the running cost of the power plant
+     * @return The running cost
+     */
     public float getRunningCost() {
         return runningCost;
     }
 
+    /**
+     * Get the idle cost of the power plant
+     * @return The idle cost
+     */
     public float getIdleCost() {
         return idleCost;
     }
 
+    /**
+     * Gets the amount of power produced by the plant
+     * @return The amount of power produced
+     */
     public float getProduction() {
         return production;
     }
 
+    /**
+     * Getter for the carbon dioxide produced by the power plant
+     * @return The amount of carbon dioxide produced
+     */
+    public float getCarbon() {
+        return carbon;
+    }
+
+    /**
+     * Overrides the inbuilt toString method to return the Power class in CSV format
+     * @return The power class as a line of CSV
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(type.toString());
@@ -79,7 +109,4 @@ public class Power extends Randomiser {
         return sb.toString();
     }
 
-    public float getCarbon() {
-        return carbon;
-    }
 }

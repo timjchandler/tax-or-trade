@@ -7,15 +7,17 @@
 
 <AnchorPane prefHeight="350.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.ParametersController">
    <children>
-      <Button layoutX="27.0" layoutY="345.0" mnemonicParsing="false" styleClass="button-cancel" stylesheets="@../css/popup.css" text="Cancel" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="20.0" />
-      <Button layoutX="197.0" layoutY="345.0" mnemonicParsing="false" styleClass="button-accept" stylesheets="@../css/popup.css" text="Accept" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="20.0" />
-      <TextField fx:id="field0" layoutX="158.0" layoutY="35.0" prefHeight="30.0" prefWidth="115.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="30.0" />
-      <TextField fx:id="field1" layoutX="165.0" layoutY="74.0" prefHeight="30.0" prefWidth="115.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="90.0" />
-      <TextField fx:id="field2" layoutX="165.0" layoutY="144.0" prefHeight="30.0" prefWidth="115.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="150.0" />
-      <TextField fx:id="field3" layoutX="175.0" layoutY="84.0" prefHeight="30.0" prefWidth="115.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="210.0" />
-      <Text fx:id="label0" layoutX="20.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-      <Text fx:id="label1" layoutX="20.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-      <Text fx:id="label2" layoutX="20.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-      <Text fx:id="label3" layoutX="20.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Button fx:id="cancelButton" layoutX="27.0" layoutY="345.0" mnemonicParsing="false" onAction="#cancel" styleClass="button-cancel" stylesheets="@../css/popup.css" text="Cancel" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="20.0" />
+      <Button layoutX="197.0" layoutY="345.0" mnemonicParsing="false" onAction="#accept" styleClass="button-accept" stylesheets="@../css/popup.css" text="Accept" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="20.0" />
+      <TextField fx:id="field0" layoutX="158.0" layoutY="35.0" prefHeight="30.0" prefWidth="115.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="70.0" />
+      <TextField fx:id="field1" layoutX="165.0" layoutY="74.0" prefHeight="30.0" prefWidth="115.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="120.0" />
+      <TextField fx:id="field2" layoutX="165.0" layoutY="144.0" prefHeight="30.0" prefWidth="115.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="170.0" />
+      <TextField fx:id="field3" layoutX="175.0" layoutY="84.0" prefHeight="30.0" prefWidth="115.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="220.0" />
+      <Text fx:id="label0" layoutX="20.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Text fx:id="label1" layoutX="20.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Text fx:id="label2" layoutX="20.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Text fx:id="label3" layoutX="20.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Text fx:id="textToT" layoutX="20.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Button fx:id="taxOrTrade" layoutX="195.0" layoutY="21.0" mnemonicParsing="false" onAction="#toggle" text="Button" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
    </children>
 </AnchorPane>

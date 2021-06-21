@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sample.controller.Controller;
-import sample.model.Agent;
 import sample.model.World;
 
 import java.util.Objects;

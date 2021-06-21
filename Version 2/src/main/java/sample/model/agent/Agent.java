@@ -1,4 +1,6 @@
-package sample.model;
+package sample.model.agent;
+
+import sample.model.power.Power;
 
 import java.util.ArrayList;
 
@@ -12,7 +14,7 @@ public class Agent {
     private float required;
     private AgentStats stats;
 
-    public Agent(int id, int initialMoney, int tick) {
+    public Agent(int id, float initialMoney, int tick) {
         this.id = id;
         this.stats = new AgentStats(initialMoney);
         this.tick = tick;
