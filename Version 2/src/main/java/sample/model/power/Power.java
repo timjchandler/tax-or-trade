@@ -108,5 +108,4 @@ public class Power extends Randomiser {
         sb.append("\tProduction: ").append(production);
         return sb.toString();
     }
-
 }

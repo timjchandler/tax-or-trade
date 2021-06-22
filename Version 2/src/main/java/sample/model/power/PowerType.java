@@ -12,16 +12,17 @@ package sample.model.power;
 public enum PowerType {
 
     // TODO standard deviations and upkeep
-    WIND        (5, 0, 2000, 0, 0.5f, 12f),        // TODO: correct cost!!!
-    GAS         (50, 0, 1000, 0, 0.5f, 490f),      // TODO: double check meanP
-    COAL        (67, 0, 3500, 0, 0.5f, 820f),
-    NUCLEAR     (150, 0, 6000, 0, 0.6f, 12f);
+    WIND        (25, 0, 45, 0, 0.5f, 12f),
+    GAS         (50, 0, 37, 0, 0.5f, 490f),
+    COAL        (67, 0, 99, 0, 0.5f, 820f),
+    NUCLEAR     (150, 0, 63, 0, 0.6f, 12f);
 
-    // COSTS: https://www.eia.gov/outlooks/aeo/assumptions/pdf/table_8.2.pdf
+    // COSTS: https://www.eia.gov/outlooks/aeo/assumptions/pdf/table_8.2.pdf < this is costs for new
+    // COSTS 2: https://www.iea.org/reports/projected-costs-of-generating-electricity-2020
 
     private final float meanPower;      // The mean power produced by this type in Gigawatt Hours (GWH) / week
 //    private final float sdPower;        // The standard deviation of power produced by this type
-    private final float meanCost;       // The mean cost of running this plant per KW
+    private final float meanCost;       // The mean cost of running this plant as 1000EUR/GWH
 //    private final float sdCost;         // The standard deviation of the running cost
     private final float upkeepWeight;   // The portion of the running cost needed for upkeep when not running
     private final float meanCarbon;     // The mean CO2 produced as tonnes per GWH

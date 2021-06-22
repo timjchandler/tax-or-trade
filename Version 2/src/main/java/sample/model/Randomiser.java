@@ -1,5 +1,9 @@
 package sample.model;
 
+import sample.model.agent.Agent;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -29,9 +33,9 @@ public abstract class Randomiser {
      */
     private float getNormal(float mean, float sd, float cutoff) {
         if (random == null) setSeed(0);
-        float out = (float) random.nextGaussian() * mean + sd;
+        float out = (float) random.nextGaussian() * sd + mean;
         while (cutoff != 0 && (out < mean + cutoff * sd && out > mean - cutoff * sd))
-            out = (float) random.nextGaussian() * mean + sd;
+            out = (float) random.nextGaussian() * sd + mean;
         return out < 0 ? 0 : out;
     }
 
@@ -82,5 +86,9 @@ public abstract class Randomiser {
      */
     public static int getSeed() {
         return seed;
+    }
+
+    public void shuffleAgents(ArrayList<Agent> agents) {
+        Collections.shuffle(agents, random);
     }
 }

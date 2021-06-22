@@ -14,6 +14,7 @@ public class World extends Randomiser {
     // The following member variables relate to the setup of the model
     private Controller controller;          // The main controller following the MVC pattern
     private File saveFile;                  // The file in which the results are saved
+    private File verboseFile;               // The file in which the verbose results are saved
     private PowerSplit split;               // The split of power types
     private int agentCount;                 // The number of agents
     private final ArrayList<Agent> agents;  // The list of agents
@@ -21,24 +22,23 @@ public class World extends Randomiser {
     private int totalTicks = 104;           // The total ticks to run for 104 (2 years) if not set
 
     // The following member variables relate to the tick updates
-    private float taxRate;                      // The current tax rate
+    private float taxRate = 0;                  // The current tax rate
     private float taxIncrement;                 // The yearly multiplier to increase/decrease tax
     private float cap;                          // The current cap on carbon emissions
     private float capIncrement;                 // The yearly multiplier to increase/decrease the cap
     private float requiredElectricity = 7671;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
     private float electricityIncrement = 1.03f; // The yearly multiplier to increase/decrease the electricity requirement
     private int tick;                           // The current tick
-    private static float energyPrice = 213400f; // The money gained from producing electricity, set as eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
-
+    private static float energyPrice = 213.4f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
 
     public World(int seed) {
         this.tick = 0;
         setSeed(seed);
         agents = new ArrayList<>();
         split = new PowerSplit();
-        energyPrice = 1;                    // TODO update this
         agentCount = 30;
-        setFile();
+        setFile("seed-" + getSeed() + ".csv");
+        setVerbose("verbose-" + getSeed() + ".csv");
     }
 
     public static float getEnergyPrice() {
@@ -79,7 +79,15 @@ public class World extends Randomiser {
         set += setupPower(totalEnergy * split.getNuclear(), PowerType.NUCLEAR);
         System.out.println("TOTAL: " + totalEnergy + "\tSET: " + set);
         float baseMoney = 5 * set * energyPrice / agentCount;
+
         for (Agent agent: agents) agent.setStartMoney(getNormal(baseMoney));
+        setAgentsRequiredElectricity();
+    }
+
+    private void setAgentsRequiredElectricity() {
+        float totalPossible = 0;
+        for (Agent agent: agents) totalPossible += agent.getTotalPotential();
+        for (Agent agent: agents) agent.setRequired(requiredElectricity * agent.getTotalPotential() / totalPossible);
     }
 
     /**
@@ -108,19 +116,24 @@ public class World extends Randomiser {
      */
     public void updateAgents() {
         for (Agent agent: agents)
-            agent.update(tick, taxRate, energyPrice);
+            agent.update(tick, taxRate);
     }
 
-    public void saveCSV() {
+    public void saveCSV(File file, boolean isVerbose, String string) {
         try {
-            FileWriter fr = new FileWriter(saveFile, true);
+            FileWriter fr = new FileWriter(file, true);
             BufferedWriter br = new BufferedWriter(fr);
-            br.write(stateToCSVString());
+            if (isVerbose) br.write(string);
+            else br.write(string);
             br.close();
             fr.close();
         } catch (IOException e) {
-            System.out.println("Error: IO exception"); // TODO: More descriptive
+            System.out.println("Error: IO exception");
         }
+    }
+
+    public void saveCSV(File file) {
+        saveCSV(file, false, stateToCSVString());
     }
 
     /**
@@ -135,23 +148,40 @@ public class World extends Randomiser {
         return sb.toString();
     }
 
+
     /**
      * Increment the tick count and update the agents accordingly. Append the
      * new state to the csv
      */
     public void tick() {
-        if (this.tick == 0) saveCSV();
+        if (this.tick == 0) {
+            saveCSV(saveFile);
+            saveCSV(verboseFile, true, "ID,Tick,Type,Carbon,Electricity\n");
+        }
         this.tick++;
         if (this.tick % 52 == 0) yearlyUpdate();
         controller.updateTick(this.tick);
         updateAgents();
-        saveCSV();
+        float energyThisTick = 0;
+        shuffleAgents(agents);
+        for (Agent agent: agents) agent.sortPower(tick, taxRate);
+        while (energyThisTick < requiredElectricity) {
+            for (Agent agent: agents) {
+                String verbose = agent.verbose();
+                if (verbose != null) saveCSV(verboseFile, true, verbose);
+                energyThisTick += agent.updatePower(taxRate);
+                if (energyThisTick > requiredElectricity) break;
+            }
+        }
+        System.out.println("Tick:\t"+ tick + "\tProduced:\t" + energyThisTick + "\tRequired:\t" + requiredElectricity + "\tDifference\t:" + (requiredElectricity - energyThisTick));
+        saveCSV(saveFile);
     }
 
     private void yearlyUpdate() {
         requiredElectricity *= electricityIncrement;    // TODO: Maybe should be per tick?
         if (isTaxNotTrade) taxRate *= taxIncrement;
         else cap *= capIncrement;
+        setAgentsRequiredElectricity();
     }
 
     /**
@@ -170,7 +200,8 @@ public class World extends Randomiser {
      */
     public void updateSeed(int seed) {
         setSeed(seed);
-        setFile();
+        setFile("seed-" + getSeed() + ".csv");
+        setVerbose("verbose-" + getSeed() + ".csv");
     }
 
     /**
@@ -216,14 +247,24 @@ public class World extends Randomiser {
     /**
      * Set the output file for storing the csv
      */
-    private void setFile() {
-        saveFile = new File("seed-" + getSeed() + ".csv");
+    private void setFile(String name) {
+        saveFile = new File(name);
         if(saveFile.exists()){
             saveFile.delete();
         }
         try {
             saveFile.createNewFile();
             System.out.println(":: New save file - " + saveFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setVerbose(String name) {
+        verboseFile = new File(name);
+        if (verboseFile.exists()) verboseFile.delete();
+        try {
+            verboseFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }

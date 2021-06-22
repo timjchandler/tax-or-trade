@@ -8,6 +8,7 @@ public class AgentStats {
     private float carbonTick;
     private float moneyTick;
     private float electricityTick;
+    private int tick = -1;
 
     public AgentStats() {
         carbonTot = carbonTick = 0;
@@ -15,18 +16,24 @@ public class AgentStats {
         moneyTick = 0;
     }
 
-    public void updateElectricity(float value) {
-        electricityTick = value;
+    public void updateElectricity(float value, int tick) {
+        if (tick == this.tick) electricityTick += value;
+        else {
+            electricityTick = value;
+            carbonTick = 0;
+            moneyTick = 0;
+        }
         electricityTot += value;
+        this.tick = tick;
     }
 
     public void updateCarbon(float value) {
-        carbonTick = value;
+        carbonTick += value;
         carbonTot += value;
     }
 
     public void updateMoney(float value) {
-        moneyTick = value;
+        moneyTick += value;
         moneyTot += value;
     }
 
