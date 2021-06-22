@@ -12,8 +12,6 @@ public class Power extends Randomiser {
     private float production;       // The amount of power produced
     private float carbon;           // The amount of carbon produced
     private Agent agent;            // The agent that this power plant belongs to
-    private int tick = -1;          // The last tick this power was updated on
-    private boolean active = false; // True if the power plant was used this tick, else false
 
     /**
      * Constructor, sets the power type and calls the initialise method
@@ -41,19 +39,21 @@ public class Power extends Randomiser {
      * @return      The potential income
      */
     public float calculateIncome() {
-        active = true;
         float revenue = production * World.getEnergyPrice();
-        float costs = carbon * World.getTaxRate() * production + runningCost;
+        float costs = carbon * World.getTaxRate() + runningCost;
         return revenue - costs;
     }
 
-    /**
-     * Decays the cost of running the plant on idle. Will not reduce the idle cost below
-     * 10% of running cost
-     */
-    public void decayIdle() {
-        active = false;
-        if (idleCost > runningCost * 0.1f) idleCost *= 0.9;
+    public float normalisedIncome() {
+        return calculateIncome() / production;
+    }
+
+    public boolean decayIdle() {
+        if (idleCost > runningCost * 0.1f) {
+            idleCost *= 0.91;
+            return true;
+        }
+        else return false;
     }
 
     /**
@@ -103,44 +103,15 @@ public class Power extends Randomiser {
         return carbon;
     }
 
-    /**
-     * Overrides the inbuilt toString method to return the Power class in CSV format
-     * @return The power class as a line of CSV
-     */
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(type.toString());
-        sb.append("\tRunning Cost: ").append(runningCost);
-        sb.append("\tIdle cost: ").append(idleCost);
-        sb.append("\tProduction: ").append(production);
-        return sb.toString();
-    }
-
     public void setAgent(Agent agent) {
         this.agent = agent;
     }
 
-    public void updateToAgent(int tick) {
-        this.tick = tick;
-        agent.updateFromPower(this, tick);
+    public String verbose(int tick) {
+        return String.valueOf(agent.getId()) + ',' +
+                tick + ',' +
+                type.toString() + ',' +
+                carbon + ',' +
+                production + '\n';
     }
-
-    public int getTick() {
-        return tick;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public String verbose() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(agent.getId()).append(',');
-        sb.append(tick).append(',');
-        sb.append(type.toString()).append(',');
-        sb.append(carbon).append(',');
-        sb.append(production).append('\n');
-        return sb.toString();
-    }
-
 }

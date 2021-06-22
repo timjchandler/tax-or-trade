@@ -21,9 +21,8 @@ public class PowerSplit {
      * Sets all proportions equally, sets the total to a default value
      */
     public PowerSplit() {
-//        this.gas = this.coal = this.wind = this.nuclear = .25f;
-//        this.total = 100000;
-        this("EU-2016");
+//        this("EU-2016");
+        this("US-2007");
         System.out.println("Wind: " + wind);
     }
 

@@ -1,5 +1,7 @@
 package sample.model.power;
 
+import sample.model.World;
+
 /**
  * Enum storing types of power plant. Includes:
  * "WIND"   - representative of wind, hydro, and solar power. Assumed to be a farm of roughly 50 turbines or equivalent
@@ -12,35 +14,29 @@ package sample.model.power;
 public enum PowerType {
 
     // TODO standard deviations and upkeep
-    WIND        (25, 0, 45, 0, 0.5f, 12f),
-    GAS         (50, 0, 37, 0, 0.5f, 490f),
-    COAL        (67, 0, 99, 0, 0.5f, 820f),
-    NUCLEAR     (150, 0, 63, 0, 0.6f, 12f);
+    WIND        (25, 45, 0.5f, 12f),
+    GAS         (50, 37,  0.5f, 490f),
+    COAL        (67, 99, 0.5f, 820f),
+    NUCLEAR     (150, 63, 0.5f, 12f);
 
     // COSTS: https://www.eia.gov/outlooks/aeo/assumptions/pdf/table_8.2.pdf < this is costs for new
     // COSTS 2: https://www.iea.org/reports/projected-costs-of-generating-electricity-2020
 
     private final float meanPower;      // The mean power produced by this type in Gigawatt Hours (GWH) / week
-//    private final float sdPower;        // The standard deviation of power produced by this type
     private final float meanCost;       // The mean cost of running this plant as 1000EUR/GWH
-//    private final float sdCost;         // The standard deviation of the running cost
     private final float upkeepWeight;   // The portion of the running cost needed for upkeep when not running
     private final float meanCarbon;     // The mean CO2 produced as tonnes per GWH
 
     /**
      * Constructor
      * @param meanP         The mean power production for this type of plant
-     * @param sdP           The standard deviation of power production
      * @param meanCost      The mean running cost
-     * @param sdC           The standard deviation of the running cost
      * @param upkeepWeight  The proportion of running cost needed to keep the plant idle
      * @param meanCarbon    The mean amount of carbon produced per energy unit
      */
-    PowerType(float meanP, float sdP, float meanCost, float sdC, float upkeepWeight, float meanCarbon) {
+    PowerType(float meanP, float meanCost, float upkeepWeight, float meanCarbon) {
         this.meanPower = meanP;
-//        this.sdPower = sdP;
         this.meanCost = meanCost;
-//        this.sdCost = sdC;
         this.upkeepWeight = upkeepWeight;
         this.meanCarbon = meanCarbon;
     }
@@ -50,17 +46,9 @@ public enum PowerType {
         return meanPower;
     }
 
-//    float getSdPower() {
-//        return sdPower;
-//    }
-
     float getMeanCost() {
         return meanCost;
     }
-
-//    float getSdCost() {
-//        return sdCost;
-//    }
 
     public float getUpkeepWeight() {
         return upkeepWeight;
@@ -68,5 +56,9 @@ public enum PowerType {
 
     public float getMeanCarbon() {
         return meanCarbon;
+    }
+
+    public float possibleProfits() {
+        return World.getEnergyPrice() - (meanCarbon * World.getTaxRate() + upkeepWeight);
     }
 }

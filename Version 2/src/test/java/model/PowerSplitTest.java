@@ -17,7 +17,7 @@
 //
 //    @Test
 //    public void testFromFile() {
-//        PowerSplit ps = new PowerSplit("us-2020");
+//        PowerSplit ps = new PowerSplit("US-2020");
 //        Assert.assertTrue(ps.toString().equals(us_2020Out));
 //    }
 //}

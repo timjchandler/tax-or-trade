@@ -1,20 +1,18 @@
 package sample.model.agent;
 
-import sample.model.World;
 import sample.model.power.Power;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Agent {
 
     private final int id;
-    private int goal;
     private final ArrayList<Power> power;
     private int tick;
     private int credits;
     private float required;
     private AgentStats stats;
-    private int tickIndex;
 
     public Agent(int id, int tick) {
         this.id = id;
@@ -23,135 +21,57 @@ public class Agent {
         this.power = new ArrayList<>();
     }
 
-//    /**
-//     * Adds a power plant to the holdings of the agent
-//     * @param power The power plant to add
-//     */
-//    public void addPower(Power power) {
-//        this.power.add(power);
-//    }
-
-// The start of second version of update
-//    public void sortPower(int tick, float tax) {
-//        this.tick = tick;
-//        this.tickIndex = 0;
-//        power.sort((o1, o2) -> Float.compare(o1.calculateIncome(), o2.calculateIncome()));
-//    }
-
-//    public float updatePower(float tax) {
-//        if (tickIndex >= power.size()) return 0;
-//        stats.updateElectricity(power.get(tickIndex).getProduction(), tick);
-//        stats.updateMoney(power.get(tickIndex).calculateIncome());
-//        stats.updateCarbon(power.get(tickIndex).getCarbon());
-//        power.get(tickIndex).resetIdle();
-//        return power.get(tickIndex++).getProduction();
-//    }
-
-    public void update(int tick) {
-        for (Power p: power) {
-            if (p.getTick() != tick) {
-                stats.updateMoney(-1 * p.getIdleCost());
-                p.decayIdle();
-            }
-        }
+    /**
+     * Adds a power plant to the holdings of the agent
+     * @param power The power plant to add
+     */
+    public void addPower(Power power) {
+        power.setAgent(this);
+        this.power.add(power);
     }
-//
-//    public void updateIdle() {
-//        for (; tickIndex < power.size() ; ++tickIndex) {
-//            power.get(tickIndex).decayIdle();
-//            stats.updateMoney(-1 * power.get(tickIndex).getIdleCost());
-//        }
-//    }
-//
-//    /**
-//     * Updates the agent for the tick
-//     * Generates power from most profitable plants at current tax rate
-//     * Updates money and carbon
-//     * @param tick  The current tick
-//     * @param tax   The current tax rate
-//     */
-//    public void update(int tick, float tax) {
-//        if (tick == this.tick) return;
-//        this.tick = tick;
-//        // TODO: This currently sorts exclusively on income, disregarding the idle costs - could be worth changing
-//        //       - Note this has been left as is for now
-//        power.sort((o1, o2) -> Float.compare(o1.calculateIncome(), o2.calculateIncome()));
-//        int idx = 0;
-//        while (stats.getElectricityTick() < required && idx < power.size()) {
-//            stats.updateElectricity(power.get(idx).getProduction(), tick);
-//            stats.updateMoney(power.get(idx).calculateIncome());
-//            stats.updateCarbon(power.get(idx).getCarbon());
-//            power.get(idx).resetIdle();
-//            idx++;
-//        }
-//        for (; idx < power.size() ; ++idx) {
-//            power.get(idx).decayIdle();
-//            stats.updateMoney(-1 * power.get(idx).getIdleCost());
-//        }
-//    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(String.valueOf(id));
-        sb.append(',').append(tick);
-        sb.append(',').append(stats.tickToSring());
-        return sb.toString();
-    }
-
-//    public String verbose() {
-//        StringBuilder sb = new StringBuilder();
-//        for (Power p: power) {
-//            if (p.isActive()) {
-//                sb.append(id).append(',');
-//                sb.append(tick).append(',');
-//                sb.append(power.get(tickIndex).getType().toString()).append(',');
-//                sb.append(power.get(tickIndex).getCarbon()).append(',');
-//                sb.append(power.get(tickIndex).getProduction()).append('\n');
-//            }
-//        }
-//        return sb.toString();
-//    }
-
-//    public void printPower() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("-| ID: ").append(id).append("\n");
-//        for (Power p: power) sb.append(" |- ").append(p.toString()).append("\n");
-//        System.out.println(sb.toString());
-//    }
 
     public void setStartMoney(float initialMoney) {
         stats.setMoneyTot(initialMoney);
     }
 
-//    public void setRequired(float required) {
-//        this.required = required;
-//    }
-//
+    public void setRequired(float required) {
+        this.required = required;
+    }
+
     public int getId() {
         return id;
     }
-//
-//    public float getMoney() {
-//        return stats.getMoneyTot();
-//    }
-//
-//    public int getTick() {
-//        return tick;
-//    }
-//
-//    public float getTotalPotential() {
-//        float total = 0;
-//        for (Power p: power) total += p.getProduction();
-//        return total;
-//    }
-//
-//    public float getEnergyThisTick() {
-//        return stats.getElectricityTick();
-//    }
 
-    public void updateFromPower(Power power, int tick) {
-        stats.updateElectricity(power.getProduction(), tick);
-        stats.updateCarbon(power.getCarbon());
-        stats.updateMoney(power.calculateIncome());
+    public float getTotalPotential() {
+        float total = 0;
+        for (Power p: power) total += p.getProduction();
+        return total;
+    }
+
+    public String updatePower(int tick) {
+        StringBuilder sb = new StringBuilder();
+        power.sort((o1, o2) -> Float.compare(o1.normalisedIncome(), o2.normalisedIncome()));
+        Collections.reverse(power);
+        float totalElectricity = 0;
+        ArrayList<Power> toRemove = new ArrayList<>();
+        for (Power p: power) {
+            if (totalElectricity > required) {
+                stats.updateMoney(p.getIdleCost());
+                if (!p.decayIdle()) toRemove.add(p);
+            } else {
+                totalElectricity += p.getProduction();
+                stats.updateElectricity(p.getProduction(), tick);
+                stats.updateMoney(p.calculateIncome());
+                stats.updateCarbon(p.getCarbon());
+                sb.append(p.verbose(tick));
+            }
+        }
+        for (Power p: toRemove) deletePower(p);
+        return sb.toString();
+    }
+
+    private void deletePower(Power p) {
+//        System.out.println("Removing: " + p.toString());
+        power.remove(p);
     }
 }
