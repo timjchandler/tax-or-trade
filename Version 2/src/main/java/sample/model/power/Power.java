@@ -2,6 +2,7 @@ package sample.model.power;
 
 import sample.model.Randomiser;
 import sample.model.World;
+import sample.model.agent.Agent;
 
 public class Power extends Randomiser {
 
@@ -10,6 +11,9 @@ public class Power extends Randomiser {
     private float idleCost;         // The upkeep cost when not running the plant
     private float production;       // The amount of power produced
     private float carbon;           // The amount of carbon produced
+    private Agent agent;            // The agent that this power plant belongs to
+    private int tick = -1;          // The last tick this power was updated on
+    private boolean active = false; // True if the power plant was used this tick, else false
 
     /**
      * Constructor, sets the power type and calls the initialise method
@@ -34,11 +38,13 @@ public class Power extends Randomiser {
     /**
      * Returns the potential income from this power plant based on the current tax
      * rate and the carbon emission factor of the power plant
-     * @param tax   The current tax rate
      * @return      The potential income
      */
-    public float calculateIncome(float tax) {
-        return production * World.getEnergyPrice() - carbon * tax - runningCost;
+    public float calculateIncome() {
+        active = true;
+        float revenue = production * World.getEnergyPrice();
+        float costs = carbon * World.getTaxRate() * production + runningCost;
+        return revenue - costs;
     }
 
     /**
@@ -46,6 +52,7 @@ public class Power extends Randomiser {
      * 10% of running cost
      */
     public void decayIdle() {
+        active = false;
         if (idleCost > runningCost * 0.1f) idleCost *= 0.9;
     }
 
@@ -108,4 +115,32 @@ public class Power extends Randomiser {
         sb.append("\tProduction: ").append(production);
         return sb.toString();
     }
+
+    public void setAgent(Agent agent) {
+        this.agent = agent;
+    }
+
+    public void updateToAgent(int tick) {
+        this.tick = tick;
+        agent.updateFromPower(this, tick);
+    }
+
+    public int getTick() {
+        return tick;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public String verbose() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(agent.getId()).append(',');
+        sb.append(tick).append(',');
+        sb.append(type.toString()).append(',');
+        sb.append(carbon).append(',');
+        sb.append(production).append('\n');
+        return sb.toString();
+    }
+
 }

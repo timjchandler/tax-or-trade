@@ -17,13 +17,14 @@ public class World extends Randomiser {
     private File verboseFile;               // The file in which the verbose results are saved
     private PowerSplit split;               // The split of power types
     private int agentCount;                 // The number of agents
+    private ArrayList<Power> powerArrayList;// The list of power plants
     private final ArrayList<Agent> agents;  // The list of agents
     private boolean isTaxNotTrade = true;   // The type of simulation: true for tax, false for cap and trade
-    private int totalTicks = 104;           // The total ticks to run for 104 (2 years) if not set
+    private int totalTicks = 1040;           // The total ticks to run for 104 (2 years) if not set
 
     // The following member variables relate to the tick updates
-    private float taxRate = 0;                  // The current tax rate
-    private float taxIncrement;                 // The yearly multiplier to increase/decrease tax
+    private static float taxRate = 10;          // The current tax rate
+    private float taxIncrement= 1.2f;           // The yearly multiplier to increase/decrease tax
     private float cap;                          // The current cap on carbon emissions
     private float capIncrement;                 // The yearly multiplier to increase/decrease the cap
     private float requiredElectricity = 7671;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
@@ -35,6 +36,7 @@ public class World extends Randomiser {
         this.tick = 0;
         setSeed(seed);
         agents = new ArrayList<>();
+        powerArrayList = new ArrayList<>();
         split = new PowerSplit();
         agentCount = 30;
         setFile("seed-" + getSeed() + ".csv");
@@ -49,18 +51,28 @@ public class World extends Randomiser {
         this.controller = controller;
     }
 
-    /**
-     * Generates power plants until a total energy production is met. Assigns these plants to
-     * agents randomly
-     * @param total The total power to generate
-     * @param type  The type of power to generate
-     */
+//    /**
+//     * Generates power plants until a total energy production is met. Assigns these plants to
+//     * agents randomly
+//     * @param total The total power to generate
+//     * @param type  The type of power to generate
+//     */
+//    private float setupPower(float total, PowerType type) {
+//        float set = 0;
+//        while (set < total) {
+//            Power power = new Power(type);
+//            set += power.getProduction();
+//            agents.get(getInt(agentCount)).addPower(power);
+//        }
+//        return set;
+//    }
     private float setupPower(float total, PowerType type) {
         float set = 0;
         while (set < total) {
             Power power = new Power(type);
             set += power.getProduction();
-            agents.get(getInt(agentCount)).addPower(power);
+            powerArrayList.add(power);
+            power.setAgent(agents.get(getInt(agentCount)));
         }
         return set;
     }
@@ -78,17 +90,17 @@ public class World extends Randomiser {
         set += setupPower(totalEnergy * split.getWind(), PowerType.WIND);
         set += setupPower(totalEnergy * split.getNuclear(), PowerType.NUCLEAR);
         System.out.println("TOTAL: " + totalEnergy + "\tSET: " + set);
+
         float baseMoney = 5 * set * energyPrice / agentCount;
-
         for (Agent agent: agents) agent.setStartMoney(getNormal(baseMoney));
-        setAgentsRequiredElectricity();
+//        setAgentsRequiredElectricity();
     }
 
-    private void setAgentsRequiredElectricity() {
-        float totalPossible = 0;
-        for (Agent agent: agents) totalPossible += agent.getTotalPotential();
-        for (Agent agent: agents) agent.setRequired(requiredElectricity * agent.getTotalPotential() / totalPossible);
-    }
+//    private void setAgentsRequiredElectricity() {
+//        float totalPossible = 0;
+//        for (Agent agent: agents) totalPossible += agent.getTotalPotential();
+//        for (Agent agent: agents) agent.setRequired(requiredElectricity * agent.getTotalPotential() / totalPossible);
+//    }
 
     /**
      * Adds an agent to the array list of agents in the world
@@ -110,14 +122,14 @@ public class World extends Randomiser {
             addAgent(agent);
         }
     }
-
-    /**
-     * Iterate through the agents, updating them for the current tick
-     */
-    public void updateAgents() {
-        for (Agent agent: agents)
-            agent.update(tick, taxRate);
-    }
+//
+//    /**
+//     * Iterate through the agents, updating them for the current tick
+//     */
+//    public void updateAgents() {
+//        for (Agent agent: agents)
+//            agent.update(tick, taxRate);
+//    }
 
     public void saveCSV(File file, boolean isVerbose, String string) {
         try {
@@ -153,6 +165,31 @@ public class World extends Randomiser {
      * Increment the tick count and update the agents accordingly. Append the
      * new state to the csv
      */
+//    public void tick() {
+//        if (this.tick == 0) {
+//            saveCSV(saveFile);
+//            saveCSV(verboseFile, true, "ID,Tick,Type,Carbon,Electricity\n");
+//        }
+//        this.tick++;
+//        if (this.tick % 52 == 0) yearlyUpdate();
+//        controller.updateTick(this.tick);
+//        updateAgents();
+//        float energyThisTick = 0;
+//        shuffleAgents(agents);
+//        for (Agent agent: agents) agent.sortPower(tick, taxRate);
+//        while (energyThisTick < requiredElectricity) {
+//            for (Agent agent: agents) {
+//                // TODO : Make this better to prevent larger power stations being overrepresented
+//                String verbose = agent.verbose();
+//                if (verbose != null) saveCSV(verboseFile, true, verbose);
+//                energyThisTick += agent.updatePower(taxRate);
+//                if (energyThisTick > requiredElectricity) break;
+//            }
+//        }
+//        System.out.println("Tick:\t"+ tick + "\tProduced:\t" + energyThisTick + "\tRequired:\t" + requiredElectricity + "\tDifference\t:" + (requiredElectricity - energyThisTick));
+//        saveCSV(saveFile);
+//    }
+
     public void tick() {
         if (this.tick == 0) {
             saveCSV(saveFile);
@@ -161,27 +198,23 @@ public class World extends Randomiser {
         this.tick++;
         if (this.tick % 52 == 0) yearlyUpdate();
         controller.updateTick(this.tick);
-        updateAgents();
-        float energyThisTick = 0;
-        shuffleAgents(agents);
-        for (Agent agent: agents) agent.sortPower(tick, taxRate);
-        while (energyThisTick < requiredElectricity) {
-            for (Agent agent: agents) {
-                String verbose = agent.verbose();
-                if (verbose != null) saveCSV(verboseFile, true, verbose);
-                energyThisTick += agent.updatePower(taxRate);
-                if (energyThisTick > requiredElectricity) break;
-            }
+        sortPower();
+
+        float electricityThisTick = 0;
+        for (Power power: powerArrayList) {
+            if (electricityThisTick > requiredElectricity) break;
+            electricityThisTick += power.getProduction();
+            power.updateToAgent(tick);
+            saveCSV(verboseFile, true, power.verbose());
         }
-        System.out.println("Tick:\t"+ tick + "\tProduced:\t" + energyThisTick + "\tRequired:\t" + requiredElectricity + "\tDifference\t:" + (requiredElectricity - energyThisTick));
-        saveCSV(saveFile);
+        for (Agent agent: agents) agent.update(tick);
     }
 
     private void yearlyUpdate() {
         requiredElectricity *= electricityIncrement;    // TODO: Maybe should be per tick?
         if (isTaxNotTrade) taxRate *= taxIncrement;
         else cap *= capIncrement;
-        setAgentsRequiredElectricity();
+//        setAgentsRequiredElectricity();
     }
 
     /**
@@ -275,7 +308,7 @@ public class World extends Randomiser {
         return totalTicks;
     }
 
-    public float getTaxRate() {
+    public static float getTaxRate() {
         return taxRate;
     }
 
@@ -305,5 +338,9 @@ public class World extends Randomiser {
 
     public boolean isTaxNotTrade() {
         return isTaxNotTrade;
+    }
+
+    private void sortPower() {
+        powerArrayList.sort((o1, o2) -> Float.compare(o1.calculateIncome(), o2.calculateIncome()));
     }
 }
