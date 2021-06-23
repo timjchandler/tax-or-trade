@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sample.model.Tax;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -59,7 +60,7 @@ public class ParametersController extends AbstractController implements Initiali
     private void setDependents() {
         if (getWorld().isTaxNotTrade()) {
             label0.setText("Tax Rate");
-            field0.setPromptText(getWorld().getTaxRate() + "");
+            field0.setPromptText(Tax.getTaxRate() + "");
             label1.setText("Yearly tax increase");
             field1.setPromptText(getWorld().getTaxIncrement() + "");
             textToT.setText("Current: Tax");

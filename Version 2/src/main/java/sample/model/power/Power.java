@@ -1,6 +1,7 @@
 package sample.model.power;
 
 import sample.model.Randomiser;
+import sample.model.Tax;
 import sample.model.World;
 import sample.model.agent.Agent;
 
@@ -40,7 +41,7 @@ public class Power extends Randomiser {
      */
     public float calculateIncome() {
         float revenue = production * World.getEnergyPrice();
-        float costs = carbon * World.getTaxRate() + runningCost;
+        float costs = carbon * Tax.getTaxRate() + runningCost;
         return revenue - costs;
     }
 

@@ -1,5 +1,6 @@
 package sample.model.power;
 
+import sample.model.Tax;
 import sample.model.World;
 
 /**
@@ -59,6 +60,6 @@ public enum PowerType {
     }
 
     public float possibleProfits() {
-        return World.getEnergyPrice() - (meanCarbon * World.getTaxRate() + upkeepWeight);
+        return World.getEnergyPrice() - (meanCarbon * Tax.getTaxRate() + upkeepWeight);
     }
 }

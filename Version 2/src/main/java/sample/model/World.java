@@ -2,12 +2,12 @@ package sample.model;
 
 import sample.controller.Controller;
 import sample.model.agent.Agent;
+import sample.model.auction.Trade;
 import sample.model.data.DataManager;
 import sample.model.power.Power;
 import sample.model.power.PowerSplit;
 import sample.model.power.PowerType;
 
-import java.io.*;
 import java.util.ArrayList;
 
 public class World extends Randomiser {
@@ -27,14 +27,13 @@ public class World extends Randomiser {
     private float cap;                          // The current cap on carbon emissions
     private float capIncrement;                 // The yearly multiplier to increase/decrease the cap
     private float requiredElectricity = 7671;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
-    private final float electricityIncrement = 1.00057f; // The weekly multiplier to increase/decrease the electricity requirement
-    private int tick;                           // The current tick
     private static float energyPrice = 250f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
-    private float newBuildChance = 0.4f;
     private DataManager dataManager = null;
 
+    private Tax tax;
+    private Trade trade;
+
     public World(int seed) {
-        this.tick = 0;
         setSeed(seed);
         agents = new ArrayList<>();
         split = new PowerSplit(preset);
@@ -80,6 +79,8 @@ public class World extends Randomiser {
         float baseMoney = 15 * set * energyPrice / agentCount;
         for (Agent agent: agents) agent.setStartMoney(getNormal(baseMoney));
         setAgentsRequiredElectricity();
+        tax = new Tax(this, taxRate, taxIncrement);
+        trade = new Trade(this, cap, capIncrement);
     }
 
     private void setAgentsRequiredElectricity() {
@@ -104,44 +105,14 @@ public class World extends Randomiser {
      */
     public void createAgents(int count) {
         for (int idx = 0; idx < count; ++idx) {
-            Agent agent = new Agent(idx, tick);
+            Agent agent = new Agent(idx, 0);
             addAgent(agent);
         }
     }
 
-    public void tick() {
-        this.tick++;
-        if (isTaxNotTrade) taxRate += taxIncrement / 52;
-//        if (this.tick % 4 == 0) monthlyUpdate();
-        controller.updateTick(this.tick);
-        for (Agent agent: agents) agent.updateData(tick, dataManager);
-        if (getInt(100) < 100 * newBuildChance)
-            agents.get(getInt(agentCount)).addPower(new Power(chooseNewPower()));
-        dataManager.write(tick);
-        requiredElectricity *= electricityIncrement;
-        System.out.print("\n");
-        cleanAgents();
-        setAgentsRequiredElectricity();
-    }
-
-    /**
-     * Selects a power type to build.
-     * Picks the type based on the relative size of the following:
-     *      Possible profits squared:   This represents the economic desirability of the type of power plant
-     *      1 / mean power generation:  This represents the size, and ease of building the type of power plant
-     * @return The type of power plant to build
-     */
-    private PowerType chooseNewPower() {
-        float coal = (float) Math.pow(PowerType.COAL.possibleProfits(), 2) / PowerType.COAL.getMeanPower();
-        float gas = (float) Math.pow(PowerType.GAS.possibleProfits(), 2) / PowerType.GAS.getMeanPower();
-        float nuclear = (float) Math.pow(PowerType.NUCLEAR.possibleProfits(), 2) / PowerType.NUCLEAR.getMeanPower();
-        float wind = (float) Math.pow(PowerType.WIND.possibleProfits(), 2) / PowerType.WIND.getMeanPower();
-        float total = coal + gas + nuclear + wind;
-        int choice = getInt(100);
-        if (choice < 100 * coal / total) return PowerType.COAL;
-        if (choice < 100 * (coal + gas) / total) return PowerType.GAS;
-        if (choice < 100 * (coal + gas + nuclear) / total) return PowerType.NUCLEAR;
-        return PowerType.WIND;
+    public int tick() {
+        if (isTaxNotTrade) return tax.tick();
+        else return trade.tick();
     }
 
     /**
@@ -150,7 +121,7 @@ public class World extends Randomiser {
      */
     public void start() {
         buildWorld(requiredElectricity > 0 ? requiredElectricity : 100);    // TODO actual value
-        while (tick < totalTicks) tick();
+        while (tick() < totalTicks) {}
     }
 
     // SETTERS ////////////////////////////////////////////////////////////////
@@ -203,10 +174,6 @@ public class World extends Randomiser {
         return totalTicks;
     }
 
-    public static float getTaxRate() {
-        return taxRate;
-    }
-
     public float getTaxIncrement() {
         return taxIncrement;
     }
@@ -243,17 +210,19 @@ public class World extends Randomiser {
                 ".csv";
     }
 
-    public void cleanAgents() {
-        ArrayList<Agent> toRemove = new ArrayList<>();
-        ArrayList<Power> toRedistribute = new ArrayList<>();
-        for (Agent agent: agents) {
-            if (agent.getMoneyTot() < 0) {
-                toRemove.add(agent);
-                toRedistribute.addAll(agent.getPower());
-                agentCount--;
-            }
-        }
-        for (Agent agent: toRemove) agents.remove(agent);
-        for (Power power: toRedistribute) agents.get(getInt(agentCount)).addPower(power);
+    public ArrayList<Agent> getAgents() {
+        return agents;
+    }
+
+    public int getAgentCount() {
+        return agentCount;
+    }
+
+    public DataManager getDataManager() {
+        return dataManager;
+    }
+
+    public Controller getController() {
+        return controller;
     }
 }
