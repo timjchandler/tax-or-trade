@@ -14,8 +14,6 @@ public class World extends Randomiser {
 
     // The following member variables relate to the setup of the model
     private Controller controller;          // The main controller following the MVC pattern
-    private File saveFile;                  // The file in which the results are saved
-    private File verboseFile;               // The file in which the verbose results are saved
     private PowerSplit split;               // The split of power types
     private int agentCount;                 // The number of agents
     private final ArrayList<Agent> agents;  // The list of agents
@@ -25,14 +23,14 @@ public class World extends Randomiser {
 
     // The following member variables relate to the tick updates
     private static float taxRate = 0;           // The current tax rate in 1000Euros per Tonne
-    private float taxIncrement= 0.0001f;         // The yearly increase to the tax rate
+    private float taxIncrement= 0.0005f;         // The yearly increase to the tax rate
     private float cap;                          // The current cap on carbon emissions
     private float capIncrement;                 // The yearly multiplier to increase/decrease the cap
     private float requiredElectricity = 7671;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
     private final float electricityIncrement = 1.00057f; // The weekly multiplier to increase/decrease the electricity requirement
     private int tick;                           // The current tick
     private static float energyPrice = 250f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
-    private float newBuildChance = 0.7f;
+    private float newBuildChance = 0.4f;
     private DataManager dataManager = null;
 
     public World(int seed) {
@@ -79,7 +77,7 @@ public class World extends Randomiser {
         set += setupPower(totalEnergy * split.getNuclear(), PowerType.NUCLEAR);
         System.out.println("TOTAL: " + totalEnergy + "\tSET: " + set);
 
-        float baseMoney = 5 * set * energyPrice / agentCount;
+        float baseMoney = 15 * set * energyPrice / agentCount;
         for (Agent agent: agents) agent.setStartMoney(getNormal(baseMoney));
         setAgentsRequiredElectricity();
     }
@@ -144,19 +142,6 @@ public class World extends Randomiser {
         if (choice < 100 * (coal + gas) / total) return PowerType.GAS;
         if (choice < 100 * (coal + gas + nuclear) / total) return PowerType.NUCLEAR;
         return PowerType.WIND;
-    }
-
-    private void monthlyUpdate() {
-//        float total = 0;
-//        for (Agent agent: agents) total += agent.getTotalPotential();
-//        for (Agent agent: agents) agent.setRequired(requiredElectricity * agent.getTotalPotential() / total);
-        if (this.tick % 52 == 0) yearlyUpdate();
-    }
-
-    private void yearlyUpdate() {
-        if (isTaxNotTrade) taxRate += taxIncrement;
-        else cap *= capIncrement;
-        System.out.println("\n:: YEAR " + tick / 52 + "\n");
     }
 
     /**

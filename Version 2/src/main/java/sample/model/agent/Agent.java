@@ -69,7 +69,6 @@ public class Agent {
             }
         }
         for (Power p: toRemove) deletePower(p);
-        System.out.print(stats.getMoneyTick() + "\t");
     }
 
     private void deletePower(Power p) {
