@@ -84,7 +84,9 @@ public class Controller extends AbstractController implements Initializable {
     }
 
     public void updateBottomText() {
-        bottomText.setText("CSV file saved in:\t" + getWorld().getSaveLocation());
+        String loc = getWorld().getSaveLocation();
+        if (loc == null) bottomText.setText("No file location yet");
+        else bottomText.setText("CSV file saved in:\t" + loc);
     }
 
     @Override

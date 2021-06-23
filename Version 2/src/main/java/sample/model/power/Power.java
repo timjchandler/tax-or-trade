@@ -8,10 +8,10 @@ public class Power extends Randomiser {
 
     private final PowerType type;   // The type of power (Coal, gas, wind, nuclear)
     private float runningCost;      // The running cost of the power plant
-    private float idleCost;         // The upkeep cost when not running the plant
     private float production;       // The amount of power produced
     private float carbon;           // The amount of carbon produced
     private Agent agent;            // The agent that this power plant belongs to
+    private int idleTime = 0;
 
     /**
      * Constructor, sets the power type and calls the initialise method
@@ -49,18 +49,14 @@ public class Power extends Randomiser {
     }
 
     public boolean decayIdle() {
-        if (idleCost > runningCost * 0.1f) {
-            idleCost *= 0.91;
-            return true;
-        }
-        else return false;
+        return idleTime++ < 10;
     }
 
     /**
      * Resets the idle cost to the default value
      */
     public void resetIdle() {
-        idleCost = runningCost * type.getUpkeepWeight();
+        idleTime = 0;
     }
 
     /**
@@ -77,14 +73,6 @@ public class Power extends Randomiser {
      */
     public float getRunningCost() {
         return runningCost;
-    }
-
-    /**
-     * Get the idle cost of the power plant
-     * @return The idle cost
-     */
-    public float getIdleCost() {
-        return idleCost;
     }
 
     /**
@@ -107,11 +95,7 @@ public class Power extends Randomiser {
         this.agent = agent;
     }
 
-    public String verbose(int tick) {
-        return String.valueOf(agent.getId()) + ',' +
-                tick + ',' +
-                type.toString() + ',' +
-                carbon + ',' +
-                production + '\n';
+    public boolean isInUse() {
+        return idleTime == 0;
     }
 }

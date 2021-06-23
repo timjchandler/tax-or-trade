@@ -3,7 +3,7 @@ package sample.model.agent;
 public class AgentStats {
 
     private float carbonTot;
-    private float moneyTot;
+    private double moneyTot;
     private float electricityTot;
     private float carbonTick;
     private float moneyTick;
@@ -45,7 +45,7 @@ public class AgentStats {
         return carbonTot;
     }
 
-    public float getMoneyTot() {
+    public double getMoneyTot() {
         return moneyTot;
     }
 

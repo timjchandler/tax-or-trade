@@ -14,10 +14,10 @@ import sample.model.World;
 public enum PowerType {
 
     // TODO standard deviations and upkeep
-    WIND        (25, 45, 0.5f, 12f),
-    GAS         (50, 37,  0.5f, 490f),
-    COAL        (67, 99, 0.5f, 820f),
-    NUCLEAR     (150, 63, 0.5f, 12f);
+    WIND        (25, 45, 0f, 12f),
+    GAS         (50, 37,  0f, 490f),
+    COAL        (67, 99, 0f, 820f),
+    NUCLEAR     (150, 63, 0f, 12f);
 
     // COSTS: https://www.eia.gov/outlooks/aeo/assumptions/pdf/table_8.2.pdf < this is costs for new
     // COSTS 2: https://www.iea.org/reports/projected-costs-of-generating-electricity-2020

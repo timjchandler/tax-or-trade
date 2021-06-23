@@ -50,6 +50,8 @@ public class Agent {
     }
 
     public void updateData(int tick, DataManager dataManager) {
+        if (this.tick == tick) System.out.println(":: WARNING: Agent " + id + " called twice in tick " + tick);
+        this.tick = tick;
         power.sort(((o1, o2) -> Float.compare(o1.normalisedIncome(), o2.normalisedIncome())));
         Collections.reverse(power);
         float totalElecticity = 0;
@@ -57,7 +59,6 @@ public class Agent {
 
         for(Power p: power) {
             if (totalElecticity > required) {
-                stats.updateMoney(p.getIdleCost());
                 if (!p.decayIdle()) toRemove.add(p);
             } else {
                 totalElecticity += p.getProduction();
@@ -68,32 +69,18 @@ public class Agent {
             }
         }
         for (Power p: toRemove) deletePower(p);
-    }
-
-    public String updatePower(int tick) {
-        StringBuilder sb = new StringBuilder();
-        power.sort((o1, o2) -> Float.compare(o1.normalisedIncome(), o2.normalisedIncome()));
-        Collections.reverse(power);
-        float totalElectricity = 0;
-        ArrayList<Power> toRemove = new ArrayList<>();
-        for (Power p: power) {
-            if (totalElectricity > required) {
-                stats.updateMoney(p.getIdleCost());
-                if (!p.decayIdle()) toRemove.add(p);
-            } else {
-                totalElectricity += p.getProduction();
-                stats.updateElectricity(p.getProduction(), tick);
-                stats.updateMoney(p.calculateIncome());
-                stats.updateCarbon(p.getCarbon());
-                sb.append(p.verbose(tick));
-            }
-        }
-        for (Power p: toRemove) deletePower(p);
-        return sb.toString();
+        System.out.print(stats.getMoneyTick() + "\t");
     }
 
     private void deletePower(Power p) {
-//        System.out.println("Removing: " + p.toString());
         power.remove(p);
+    }
+
+    public ArrayList<Power> getPower() {
+        return power;
+    }
+
+    public double getMoneyTot() {
+        return stats.getMoneyTot();
     }
 }

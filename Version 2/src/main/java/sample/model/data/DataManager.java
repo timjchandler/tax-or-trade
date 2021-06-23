@@ -12,7 +12,7 @@ public class DataManager {
 
     private final World world;
     private File save;
-    private DataCGNW data;
+    private final DataCGNW data;
 
     public DataManager(World world) {
         this.world = world;
@@ -75,5 +75,9 @@ public class DataManager {
         sb.append(data.getWindElectricity()).append('\n');
         appendCSV(sb.toString());
         data.zero();
+    }
+
+    public String getFilepath() {
+        return save.getPath();
     }
 }

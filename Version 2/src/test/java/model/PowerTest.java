@@ -29,7 +29,6 @@ public class PowerTest {
         System.out.println("Type:\t\t\t" + power.getType());
         System.out.println("Production:\t\t" + power.getProduction());
         System.out.println("Running Cost:\t" + power.getRunningCost());
-        System.out.println("Idle Cost:\t\t" + power.getIdleCost());
     }
 
     /**
@@ -39,7 +38,6 @@ public class PowerTest {
     public void testDecay() {
         Power power = new Power(PowerType.GAS);
         for (int idx = 0; idx < 10; ++idx) {
-            System.out.println(power.getIdleCost());
             power.decayIdle();
         }
     }

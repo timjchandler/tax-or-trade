@@ -20,29 +20,27 @@ public class World extends Randomiser {
     private int agentCount;                 // The number of agents
     private final ArrayList<Agent> agents;  // The list of agents
     private boolean isTaxNotTrade = true;   // The type of simulation: true for tax, false for cap and trade
-    private int totalTicks = 1040;           // The total ticks to run for 104 (2 years) if not set
+    private int totalTicks = 676;           // The total ticks to run for 104 (2 years) if not set
     private String preset = "US-2007";
 
     // The following member variables relate to the tick updates
     private static float taxRate = 0;           // The current tax rate in 1000Euros per Tonne
-    private float taxIncrement= 0.005f;         // The yearly increase to the tax rate
+    private float taxIncrement= 0.0001f;         // The yearly increase to the tax rate
     private float cap;                          // The current cap on carbon emissions
     private float capIncrement;                 // The yearly multiplier to increase/decrease the cap
     private float requiredElectricity = 7671;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
     private final float electricityIncrement = 1.00057f; // The weekly multiplier to increase/decrease the electricity requirement
     private int tick;                           // The current tick
-    private static float energyPrice = 213.4f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
-    private float newBuildChance = 0.1f;
-    private DataManager dataManager;
+    private static float energyPrice = 250f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
+    private float newBuildChance = 0.7f;
+    private DataManager dataManager = null;
 
     public World(int seed) {
         this.tick = 0;
         setSeed(seed);
         agents = new ArrayList<>();
         split = new PowerSplit(preset);
-        agentCount = 30;
-        setFile("seed-" + getSeed() + "-" + preset + ".csv");
-        setVerbose("verbose-" + getSeed() + "-" + preset + ".csv");
+        agentCount = 20;
     }
 
     public static float getEnergyPrice() {
@@ -55,11 +53,14 @@ public class World extends Randomiser {
 
     private float setupPower(float total, PowerType type) {
         float set = 0;
+        int count = 0;
         while (set < total) {
             Power power = new Power(type);
             set += power.getProduction();
             agents.get(getInt(agentCount)).addPower(power);
+            count++;
         }
+        System.out.println(count + "\t" + type.toString());
         return set;
     }
 
@@ -68,7 +69,8 @@ public class World extends Randomiser {
      * @param totalEnergy   The total energy to generate between all plants - NOTE: this is the total energy that can be produced, not the energy required per tick
      */
     private void buildWorld(float totalEnergy) {
-        totalEnergy *= 1.5f;
+        dataManager = new DataManager(this);
+        totalEnergy *= 2f;
         createAgents(agentCount);
         float set = 0;
         set += setupPower(totalEnergy * split.getCoal(), PowerType.COAL);
@@ -80,7 +82,6 @@ public class World extends Randomiser {
         float baseMoney = 5 * set * energyPrice / agentCount;
         for (Agent agent: agents) agent.setStartMoney(getNormal(baseMoney));
         setAgentsRequiredElectricity();
-        dataManager = new DataManager(this);
     }
 
     private void setAgentsRequiredElectricity() {
@@ -112,13 +113,17 @@ public class World extends Randomiser {
 
     public void tick() {
         this.tick++;
-        if (this.tick % 4 == 0) monthlyUpdate();
+        if (isTaxNotTrade) taxRate += taxIncrement / 52;
+//        if (this.tick % 4 == 0) monthlyUpdate();
         controller.updateTick(this.tick);
         for (Agent agent: agents) agent.updateData(tick, dataManager);
         if (getInt(100) < 100 * newBuildChance)
             agents.get(getInt(agentCount)).addPower(new Power(chooseNewPower()));
         dataManager.write(tick);
         requiredElectricity *= electricityIncrement;
+        System.out.print("\n");
+        cleanAgents();
+        setAgentsRequiredElectricity();
     }
 
     /**
@@ -142,15 +147,16 @@ public class World extends Randomiser {
     }
 
     private void monthlyUpdate() {
-        float total = 0;
-        for (Agent agent: agents) total += agent.getTotalPotential();
-        for (Agent agent: agents) agent.setRequired(requiredElectricity * agent.getTotalPotential() / total);
+//        float total = 0;
+//        for (Agent agent: agents) total += agent.getTotalPotential();
+//        for (Agent agent: agents) agent.setRequired(requiredElectricity * agent.getTotalPotential() / total);
         if (this.tick % 52 == 0) yearlyUpdate();
     }
 
     private void yearlyUpdate() {
         if (isTaxNotTrade) taxRate += taxIncrement;
         else cap *= capIncrement;
+        System.out.println("\n:: YEAR " + tick / 52 + "\n");
     }
 
     /**
@@ -169,8 +175,6 @@ public class World extends Randomiser {
      */
     public void updateSeed(int seed) {
         setSeed(seed);
-        setFile("seed-" + getSeed() + ".csv");
-        setVerbose("verbose-" + getSeed() + ".csv");
     }
 
     /**
@@ -209,32 +213,6 @@ public class World extends Randomiser {
         this.totalTicks = totalTicks;
     }
 
-    /**
-     * Set the output file for storing the csv
-     */
-    private void setFile(String name) {
-        saveFile = new File(name);
-        if(saveFile.exists()){
-            saveFile.delete();
-        }
-        try {
-            saveFile.createNewFile();
-            System.out.println(":: New save file - " + saveFile.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void setVerbose(String name) {
-        verboseFile = new File(name);
-        if (verboseFile.exists()) verboseFile.delete();
-        try {
-            verboseFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     // GETTERS ////////////////////////////////////////////////////////////////
     public int getTotalTicks() {
         return totalTicks;
@@ -265,7 +243,8 @@ public class World extends Randomiser {
      * @return  The full path of the save location
      */
     public String getSaveLocation() {
-        return saveFile.getAbsolutePath();
+        if (dataManager == null) return null;
+        return dataManager.getFilepath();
     }
 
     public boolean isTaxNotTrade() {
@@ -277,5 +256,19 @@ public class World extends Randomiser {
                 "-type-" + (isTaxNotTrade ? "tax" : "trade") +
                 "-preset-" + preset +
                 ".csv";
+    }
+
+    public void cleanAgents() {
+        ArrayList<Agent> toRemove = new ArrayList<>();
+        ArrayList<Power> toRedistribute = new ArrayList<>();
+        for (Agent agent: agents) {
+            if (agent.getMoneyTot() < 0) {
+                toRemove.add(agent);
+                toRedistribute.addAll(agent.getPower());
+                agentCount--;
+            }
+        }
+        for (Agent agent: toRemove) agents.remove(agent);
+        for (Power power: toRedistribute) agents.get(getInt(agentCount)).addPower(power);
     }
 }
