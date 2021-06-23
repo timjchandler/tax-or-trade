@@ -1,5 +1,6 @@
 package sample.model.agent;
 
+import sample.model.data.DataManager;
 import sample.model.power.Power;
 
 import java.util.ArrayList;
@@ -46,6 +47,27 @@ public class Agent {
         float total = 0;
         for (Power p: power) total += p.getProduction();
         return total;
+    }
+
+    public void updateData(int tick, DataManager dataManager) {
+        power.sort(((o1, o2) -> Float.compare(o1.normalisedIncome(), o2.normalisedIncome())));
+        Collections.reverse(power);
+        float totalElecticity = 0;
+        ArrayList<Power> toRemove = new ArrayList<>();
+
+        for(Power p: power) {
+            if (totalElecticity > required) {
+                stats.updateMoney(p.getIdleCost());
+                if (!p.decayIdle()) toRemove.add(p);
+            } else {
+                totalElecticity += p.getProduction();
+                stats.updateElectricity(p.getProduction(), tick);
+                stats.updateMoney(p.calculateIncome());
+                stats.updateCarbon(p.getCarbon());
+                dataManager.add(p);
+            }
+        }
+        for (Power p: toRemove) deletePower(p);
     }
 
     public String updatePower(int tick) {

@@ -42,11 +42,11 @@ public enum PowerType {
     }
 
     // Getters
-    float getMeanPower() {
+    public float getMeanPower() {
         return meanPower;
     }
 
-    float getMeanCost() {
+    public float getMeanCost() {
         return meanCost;
     }
 

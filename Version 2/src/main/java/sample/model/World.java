@@ -2,6 +2,7 @@ package sample.model;
 
 import sample.controller.Controller;
 import sample.model.agent.Agent;
+import sample.model.data.DataManager;
 import sample.model.power.Power;
 import sample.model.power.PowerSplit;
 import sample.model.power.PowerType;
@@ -20,23 +21,24 @@ public class World extends Randomiser {
     private final ArrayList<Agent> agents;  // The list of agents
     private boolean isTaxNotTrade = true;   // The type of simulation: true for tax, false for cap and trade
     private int totalTicks = 1040;           // The total ticks to run for 104 (2 years) if not set
+    private String preset = "US-2007";
 
     // The following member variables relate to the tick updates
     private static float taxRate = 0;           // The current tax rate in 1000Euros per Tonne
-    private float taxIncrement= 0.01f;         // The yearly increase to the tax rate
+    private float taxIncrement= 0.005f;         // The yearly increase to the tax rate
     private float cap;                          // The current cap on carbon emissions
     private float capIncrement;                 // The yearly multiplier to increase/decrease the cap
     private float requiredElectricity = 7671;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
-    private float electricityIncrement = 1.00057f; // The weekly multiplier to increase/decrease the electricity requirement
+    private final float electricityIncrement = 1.00057f; // The weekly multiplier to increase/decrease the electricity requirement
     private int tick;                           // The current tick
     private static float energyPrice = 213.4f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
     private float newBuildChance = 0.1f;
+    private DataManager dataManager;
 
     public World(int seed) {
         this.tick = 0;
         setSeed(seed);
         agents = new ArrayList<>();
-        String preset = "US-2007";
         split = new PowerSplit(preset);
         agentCount = 30;
         setFile("seed-" + getSeed() + "-" + preset + ".csv");
@@ -78,6 +80,7 @@ public class World extends Randomiser {
         float baseMoney = 5 * set * energyPrice / agentCount;
         for (Agent agent: agents) agent.setStartMoney(getNormal(baseMoney));
         setAgentsRequiredElectricity();
+        dataManager = new DataManager(this);
     }
 
     private void setAgentsRequiredElectricity() {
@@ -107,65 +110,42 @@ public class World extends Randomiser {
         }
     }
 
-    public void saveCSV(File file, String string) {
-        try {
-            FileWriter fr = new FileWriter(file, true);
-            BufferedWriter br = new BufferedWriter(fr);
-            br.write(string);
-            br.close();
-            fr.close();
-        } catch (IOException e) {
-            System.out.println("Error: IO exception");
-        }
-    }
-
-    public void saveCSV(File file) {
-        saveCSV(file, stateToCSVString());
+    public void tick() {
+        this.tick++;
+        if (this.tick % 4 == 0) monthlyUpdate();
+        controller.updateTick(this.tick);
+        for (Agent agent: agents) agent.updateData(tick, dataManager);
+        if (getInt(100) < 100 * newBuildChance)
+            agents.get(getInt(agentCount)).addPower(new Power(chooseNewPower()));
+        dataManager.write(tick);
+        requiredElectricity *= electricityIncrement;
     }
 
     /**
-     * Generates a string representing the current state of the model
-     * @return  A string listing the state of each agent in the model
+     * Selects a power type to build.
+     * Picks the type based on the relative size of the following:
+     *      Possible profits squared:   This represents the economic desirability of the type of power plant
+     *      1 / mean power generation:  This represents the size, and ease of building the type of power plant
+     * @return The type of power plant to build
      */
-    private String stateToCSVString() {
-        StringBuilder sb = new StringBuilder();
-        if (tick == 0) sb.append("ID,Tick,Electricity,Carbon,MoneyTick,MoneyTotal\n");
-        for (Agent agent: agents)
-            sb.append(agent.toString()).append("\n");
-        return sb.toString();
-    }
-
-    public void tick() {
-        if (this.tick == 0) {
-            saveCSV(saveFile);
-            saveCSV(verboseFile, "ID,Tick,Type,Carbon,Electricity\n");
-        }
-        this.tick++;
-        if (this.tick % 52 == 0) yearlyUpdate();
-        controller.updateTick(this.tick);
-        for (Agent agent: agents) {
-            String info = agent.updatePower(tick);
-            if (info != null && info.length() > 0) saveCSV(verboseFile, info);
-        }
-        if (getInt(100) < 100 * newBuildChance) {
-//            Power p = new Power(Power.mostProfitable());
-            Power p = new Power(chooseNewPower());
-            System.out.println(":: ADDING: " + p.getType().toString());
-            agents.get(getInt(agentCount)).addPower(p);
-        }
-    }
-
     private PowerType chooseNewPower() {
-        float coal = (float) Math.pow(PowerType.COAL.possibleProfits(), 2);
-        float gas = (float) Math.pow(PowerType.GAS.possibleProfits(), 2);
-        float nuclear = (float) Math.pow(PowerType.NUCLEAR.possibleProfits(), 2);
-        float wind = (float) Math.pow(PowerType.WIND.possibleProfits(), 2);
+        float coal = (float) Math.pow(PowerType.COAL.possibleProfits(), 2) / PowerType.COAL.getMeanPower();
+        float gas = (float) Math.pow(PowerType.GAS.possibleProfits(), 2) / PowerType.GAS.getMeanPower();
+        float nuclear = (float) Math.pow(PowerType.NUCLEAR.possibleProfits(), 2) / PowerType.NUCLEAR.getMeanPower();
+        float wind = (float) Math.pow(PowerType.WIND.possibleProfits(), 2) / PowerType.WIND.getMeanPower();
         float total = coal + gas + nuclear + wind;
         int choice = getInt(100);
         if (choice < 100 * coal / total) return PowerType.COAL;
         if (choice < 100 * (coal + gas) / total) return PowerType.GAS;
         if (choice < 100 * (coal + gas + nuclear) / total) return PowerType.NUCLEAR;
         return PowerType.WIND;
+    }
+
+    private void monthlyUpdate() {
+        float total = 0;
+        for (Agent agent: agents) total += agent.getTotalPotential();
+        for (Agent agent: agents) agent.setRequired(requiredElectricity * agent.getTotalPotential() / total);
+        if (this.tick % 52 == 0) yearlyUpdate();
     }
 
     private void yearlyUpdate() {
@@ -290,5 +270,12 @@ public class World extends Randomiser {
 
     public boolean isTaxNotTrade() {
         return isTaxNotTrade;
+    }
+
+    public String getSaveName() {
+        return "seed-" + getSeed() +
+                "-type-" + (isTaxNotTrade ? "tax" : "trade") +
+                "-preset-" + preset +
+                ".csv";
     }
 }
