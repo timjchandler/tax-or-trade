@@ -8,7 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import sample.model.Tax;
+import sample.model.tick.Tax;
 
 import java.net.URL;
 import java.util.ResourceBundle;

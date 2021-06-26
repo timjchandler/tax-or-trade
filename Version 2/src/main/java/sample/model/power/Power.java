@@ -1,9 +1,9 @@
 package sample.model.power;
 
 import sample.model.Randomiser;
-import sample.model.Tax;
+import sample.model.tick.Tax;
 import sample.model.World;
-import sample.model.agent.Agent;
+import sample.model.tick.Trade;
 
 public class Power extends Randomiser {
 
@@ -11,8 +11,8 @@ public class Power extends Randomiser {
     private float runningCost;      // The running cost of the power plant
     private float production;       // The amount of power produced
     private float carbon;           // The amount of carbon produced
-    private Agent agent;            // The agent that this power plant belongs to
     private int idleTime = 0;
+    private boolean used = false;
 
     /**
      * Constructor, sets the power type and calls the initialise method
@@ -39,14 +39,24 @@ public class Power extends Randomiser {
      * rate and the carbon emission factor of the power plant
      * @return      The potential income
      */
-    public float calculateIncome() {
+    public float calculateIncomeFromTax() {
         float revenue = production * World.getEnergyPrice();
         float costs = carbon * Tax.getTaxRate() + runningCost;
         return revenue - costs;
     }
 
-    public float normalisedIncome() {
-        return calculateIncome() / production;
+    public float normalisedIncomeFromTax() {
+        return calculateIncomeFromTax() / production;
+    }
+
+    public float normalisedIncomeFromTrade() {
+        float revenue = production * World.getEnergyPrice();
+        float costs = carbon * Trade.getCreditPrice() + runningCost;
+        return (revenue - costs) / production;
+    }
+
+    public float carbonNormalisedIncome() {
+        return (production * World.getEnergyPrice()) / carbon;
     }
 
     public boolean decayIdle() {
@@ -92,11 +102,15 @@ public class Power extends Randomiser {
         return carbon;
     }
 
-    public void setAgent(Agent agent) {
-        this.agent = agent;
+    public boolean isUsed() {
+        return used;
     }
 
-    public boolean isInUse() {
-        return idleTime == 0;
+    public void use() {
+        used = true;
+    }
+
+    public void clearUse() {
+        used = false;
     }
 }

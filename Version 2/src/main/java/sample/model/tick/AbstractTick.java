@@ -1,5 +1,7 @@
-package sample.model;
+package sample.model.tick;
 
+import sample.model.Randomiser;
+import sample.model.World;
 import sample.model.agent.Agent;
 import sample.model.data.DataManager;
 import sample.model.power.Power;
@@ -16,7 +18,8 @@ public abstract class AbstractTick extends Randomiser {
     private int tick;
     private float requiredElectricity;
     private final float electricityIncrement = 1 + 0.03f / 52;
-    private float newBuildChance = 0.4f;
+    private final float newBuildChance = 0.4f;
+    private float possibleElectricity;
 
     public AbstractTick(World world) {
         this.world = world;
@@ -25,11 +28,13 @@ public abstract class AbstractTick extends Randomiser {
         this.requiredElectricity = world.getRequiredElectricity();
         this.dataManager = world.getDataManager();
         this.tick = 0;
+        this.possibleElectricity = 0;
+        for (Agent agent: agents) possibleElectricity += agent.getTotalPotential();
     }
 
     public int tick() {
         this.tick++;
-        world.getController().updateTick(tick);
+//        world.getController().updateTick(tick); // TODO commented whilst running without gui
         cleanAgents();
         requiredElectricity *= electricityIncrement;
         setAgentsRequiredElectricity();
@@ -109,5 +114,9 @@ public abstract class AbstractTick extends Randomiser {
 
     public ArrayList<Agent> getAgents() {
         return agents;
+    }
+
+    public float getPossibleElectricity() {
+        return possibleElectricity;
     }
 }

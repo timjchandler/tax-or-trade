@@ -1,6 +1,6 @@
 package sample.model.power;
 
-import sample.model.Tax;
+import sample.model.tick.Tax;
 import sample.model.World;
 
 /**

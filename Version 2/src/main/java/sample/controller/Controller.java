@@ -44,7 +44,6 @@ public class Controller extends AbstractController implements Initializable {
         topInfoC.setEditable(false);
         initMenu();
         setMainController(this);
-        getWorld().setController(this);
     }
 
     private void initMenu() {

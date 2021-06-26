@@ -1,19 +1,18 @@
 package sample.model;
 
-import sample.controller.Controller;
 import sample.model.agent.Agent;
-import sample.model.auction.Trade;
+import sample.model.tick.Trade;
 import sample.model.data.DataManager;
 import sample.model.power.Power;
 import sample.model.power.PowerSplit;
 import sample.model.power.PowerType;
+import sample.model.tick.Tax;
 
 import java.util.ArrayList;
 
 public class World extends Randomiser {
 
     // The following member variables relate to the setup of the model
-    private Controller controller;          // The main controller following the MVC pattern
     private PowerSplit split;               // The split of power types
     private int agentCount;                 // The number of agents
     private final ArrayList<Agent> agents;  // The list of agents
@@ -27,7 +26,7 @@ public class World extends Randomiser {
     private float cap;                          // The current cap on carbon emissions
     private float capIncrement;                 // The yearly multiplier to increase/decrease the cap
     private float requiredElectricity = 7671;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
-    private static float energyPrice = 250f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
+    private static final float energyPrice = 250f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
     private DataManager dataManager = null;
 
     private Tax tax;
@@ -42,10 +41,6 @@ public class World extends Randomiser {
 
     public static float getEnergyPrice() {
         return energyPrice;
-    }
-
-    public void setController(Controller controller) {
-        this.controller = controller;
     }
 
     private float setupPower(float total, PowerType type) {
@@ -120,8 +115,11 @@ public class World extends Randomiser {
      * many ticks as have been set
      */
     public void start() {
-        buildWorld(requiredElectricity > 0 ? requiredElectricity : 100);    // TODO actual value
-        while (tick() < totalTicks) {}
+        buildWorld(requiredElectricity);
+        int totalPlants = 0;
+        for (Agent agent: agents) totalPlants += agent.getPower().size();
+        System.out.println(":: " + agents.size() + " agents, " + totalPlants + " power plants");
+        while (tick() < totalTicks);
     }
 
     // SETTERS ////////////////////////////////////////////////////////////////
@@ -167,6 +165,18 @@ public class World extends Randomiser {
 
     public void setTotalTicks(int totalTicks) {
         this.totalTicks = totalTicks;
+    }
+
+    public void setSplit(PowerSplit split) {
+        this.split = split;
+    }
+
+    public void setPreset(String preset) {
+        this.preset = preset;
+    }
+
+    public void setAgentCount(int agentCount) {
+        this.agentCount = agentCount;
     }
 
     // GETTERS ////////////////////////////////////////////////////////////////
@@ -220,9 +230,5 @@ public class World extends Randomiser {
 
     public DataManager getDataManager() {
         return dataManager;
-    }
-
-    public Controller getController() {
-        return controller;
     }
 }

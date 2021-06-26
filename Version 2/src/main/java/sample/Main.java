@@ -28,7 +28,25 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+        if (args.length == 0) launch(args);
+        else {
+            if (args[0].equals("-h") || args[0].equals("help")) help();
+            World world = new World(Integer.parseInt(args[0]));
+            if (args.length == 3) {
+                world.setTaxRate(Float.parseFloat(args[1]));
+                world.setTaxIncrement(Float.parseFloat(args[2]));
+            }
+            world.start();
+        }
+    }
+
+    private static void help() {
+        System.out.println("Run with the following arguments:\n" +
+                "-\tSeed number\t\t\t\t(Integer)\n" +
+                "-\tTax rate\t\t\t\t(Float)\n" +
+                "-\tYearly tax increment\t(Float)\n" +
+                "This may be run with 0, 1 or 3 arguments.");
+        System.exit(0);
     }
 
     public static Stage getPrimaryStage() {
