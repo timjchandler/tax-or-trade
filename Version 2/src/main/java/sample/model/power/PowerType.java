@@ -10,11 +10,10 @@ import sample.model.World;
  * "COAL"   - representative of coal and lignite power plants - this has been expanded to include oil for simplicity - the difference in generation between the two is negligible when compared to the other types of power.
  * "NUCLEAR"- representative of only nuclear power plants
  *
- * CO2 emissions are measured as kg / kWh
+ * CO2 emissions are measured as tonne / GWh
  */
 public enum PowerType {
 
-    // TODO standard deviations and upkeep
     WIND        (25, 45, 0f, 12f),
     GAS         (50, 37,  0f, 490f),
     COAL        (67, 99, 0f, 820f),
@@ -42,23 +41,34 @@ public enum PowerType {
         this.meanCarbon = meanCarbon;
     }
 
-    // Getters
+    /**
+     * Getter for the mean power usage
+      * @return the mean power usage
+     */
     public float getMeanPower() {
         return meanPower;
     }
 
+    /**
+     * Getter for the mean cost of operation
+     * @return the mean cost of operation
+     */
     public float getMeanCost() {
         return meanCost;
     }
 
-    public float getUpkeepWeight() {
-        return upkeepWeight;
-    }
-
+    /**
+     * Getter for the mean carbon dioxide produced
+     * @return The mean CO2 production
+     */
     public float getMeanCarbon() {
         return meanCarbon;
     }
 
+    /**
+     * Calculate the possible profits based on current tax rate and energy price
+     * @return The typical profits for this power type
+     */
     public float possibleProfits() {
         return World.getEnergyPrice() - (meanCarbon * Tax.getTaxRate() + upkeepWeight);
     }

@@ -3,6 +3,9 @@ package sample.model.tick;
 import sample.model.World;
 import sample.model.agent.Agent;
 
+/**
+ * Performs per tick actions for a tax model, inheriting from the abstract tick class
+ */
 public class Tax extends AbstractTick {
 
     private static float taxRate;       // The current tax rate

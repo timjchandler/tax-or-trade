@@ -87,8 +87,4 @@ public abstract class Randomiser {
     public static int getSeed() {
         return seed;
     }
-
-    public void shuffleAgents(ArrayList<Agent> agents) {
-        Collections.shuffle(agents, random);
-    }
 }
