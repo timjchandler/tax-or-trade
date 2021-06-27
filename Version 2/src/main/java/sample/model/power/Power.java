@@ -12,7 +12,6 @@ public class Power extends Randomiser {
     private float production;       // The amount of power produced
     private float carbon;           // The amount of carbon produced
     private int idleTime = 0;
-    private boolean used = false;
 
     /**
      * Constructor, sets the power type and calls the initialise method
@@ -45,20 +44,36 @@ public class Power extends Randomiser {
         return revenue - costs;
     }
 
+    /**
+     * Calculates the income at a current tax rate normalised per GWh of electricity produced
+     * @return The normalised income
+     */
     public float normalisedIncomeFromTax() {
         return calculateIncomeFromTax() / production;
     }
 
+    /**
+     * TODO !!!
+     * @return
+     */
     public float normalisedIncomeFromTrade() {
         float revenue = production * World.getEnergyPrice();
         float costs = carbon * Trade.getCreditPrice() + runningCost;
         return (revenue - costs) / production;
     }
 
+    /**
+     * TODO: Check this!!!
+     * @return
+     */
     public float carbonNormalisedIncome() {
         return (production * World.getEnergyPrice()) / carbon;
     }
 
+    /**
+     * Increments a counter for how long the power plant has been idle
+     * @return  True if the power plant has been idle for less than 10 ticks
+     */
     public boolean decayIdle() {
         return idleTime++ < 10;
     }
@@ -100,17 +115,5 @@ public class Power extends Randomiser {
      */
     public float getCarbon() {
         return carbon;
-    }
-
-    public boolean isUsed() {
-        return used;
-    }
-
-    public void use() {
-        used = true;
-    }
-
-    public void clearUse() {
-        used = false;
     }
 }

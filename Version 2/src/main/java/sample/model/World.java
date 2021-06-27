@@ -119,7 +119,7 @@ public class World extends Randomiser {
         int totalPlants = 0;
         for (Agent agent: agents) totalPlants += agent.getPower().size();
         System.out.println(":: " + agents.size() + " agents, " + totalPlants + " power plants");
-        while (tick() < totalTicks);
+        for (int completedTick = tick(); completedTick < totalTicks;) completedTick = tick();
     }
 
     // SETTERS ////////////////////////////////////////////////////////////////
@@ -214,10 +214,23 @@ public class World extends Randomiser {
     }
 
     public String getSaveName() {
+        StringBuilder dependent = new StringBuilder();
+        if (isTaxNotTrade) {
+            dependent.append("-tax-").append(formatFloat(taxRate));
+            dependent.append("-inc-").append(formatFloat(taxIncrement));
+        } else {
+            dependent.append("-trade").append(formatFloat(cap));
+            dependent.append("-inc-").append(formatFloat(capIncrement));
+        }
         return "seed-" + getSeed() +
-                "-type-" + (isTaxNotTrade ? "tax" : "trade") +
+                dependent +
                 "-preset-" + preset +
                 ".csv";
+    }
+
+    private String formatFloat(float f) {
+        String out = String.format("%.4f", f);
+        return out.substring(2);
     }
 
     public ArrayList<Agent> getAgents() {

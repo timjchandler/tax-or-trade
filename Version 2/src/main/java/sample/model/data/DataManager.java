@@ -8,18 +8,32 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Manages the data from the model, compiles it into a string at the end of each tick and
+ * appends it to a csv file
+ */
 public class DataManager {
 
-    private final World world;
-    private File save;
-    private final DataCGNW data;
+    private final World world;      // The world of the model
+    private File save;              // The file in which this models data is saved
+    private final DataCGNW data;    // The store of the raw data
 
+    /**
+     * Constructor, stores the world of the model, zeroes the data values and creates a file for storing
+     * the data
+     * @param world     The world of the model
+     */
     public DataManager(World world) {
         this.world = world;
         data = DataCGNW.RESET;
         createFile();
     }
 
+    /**
+     * Creates a file with a name generated based on the setup of the current simulation. If a file with
+     * that configuration already exists it is replaced. Shows the user error messages if the file creation
+     * or deletion is unsuccessful
+     */
     private void createFile() {
         save = new File(world.getSaveName());
         if (save.exists()) {
@@ -34,6 +48,10 @@ public class DataManager {
         appendCSV("Tick,Coal_Carbon,Gas_Carbon,Nuclear_Carbon,Wind_Carbon,Coal_Electricity,Gas_Electricity,Nuclear_Electricity,Wind_Electricity\n");
     }
 
+    /**
+     * Appends a string the currently stored data to the end of the file for this model configuration.
+     * @param string The string to append
+     */
     private void appendCSV(String string) {
         try {
             FileWriter fr = new FileWriter(save, true);
@@ -46,6 +64,10 @@ public class DataManager {
         }
     }
 
+    /**
+     * Updates the per tick data on a relevant fuel type based on the input power plant
+     * @param p The power plant whose information should be stored
+     */
     public void add(Power p) {
         switch (p.getType()) {
             case COAL:
@@ -62,6 +84,11 @@ public class DataManager {
         }
     }
 
+    /**
+     * Generates a string from the currently stored data, appends it to the csv file and resets the
+     * data store to zeroed values.
+     * @param tick The tick for which data is being written
+     */
     public void write(int tick) {
         StringBuilder sb = new StringBuilder();
         sb.append(tick).append(',');
@@ -77,6 +104,10 @@ public class DataManager {
         data.zero();
     }
 
+    /**
+     * Getter for the filepath to where the data is being stored
+     * @return  The filepath of the stored data as a string
+     */
     public String getFilepath() {
         return save.getPath();
     }

@@ -9,18 +9,29 @@ import sample.model.power.PowerType;
 
 import java.util.ArrayList;
 
+
+/**
+ * Abstract class to be extended by the tax and trade classes. Manages generic tick based operations and stores
+ * variables relevant to both approaches. Extends the randomiser for random operations such as building new power
+ * plants.
+ */
 public abstract class AbstractTick extends Randomiser {
 
-    private final World world;
-    private final ArrayList<Agent> agents;
-    private final DataManager dataManager;
-    private int agentCount;
-    private int tick;
-    private float requiredElectricity;
-    private final float electricityIncrement = 1 + 0.03f / 52;
-    private final float newBuildChance = 0.4f;
-    private float possibleElectricity;
+    private final World world;                                  // The world of the model
+    private final ArrayList<Agent> agents;                      // The agents in the model
+    private final DataManager dataManager;                      // Records and saves the carbon/electricity production
+    private int agentCount;                                     // The current number of agents
+    private int tick;                                           // The current tick
+    private float requiredElectricity;                          // The electricity that must be generated per tick
+    private final float electricityIncrement = 1 + 0.03f / 52;  // Electricity increment at 3%/year. Applied per week
+    private final float newBuildChance = 0.4f;                  // The per tick probability of building a new power plant
+    private float possibleElectricity;                          // The maximum electricity that can be generated
 
+    /**
+     * Abstrace constructor. Sets the world variable and all derived variables. Initialises the tick counter to 0.
+     * Initialises and calculates the total possible electricity generation accross all agents.
+     * @param world The world of the simulation
+     */
     public AbstractTick(World world) {
         this.world = world;
         this.agents = (ArrayList<Agent>) world.getAgents().clone();
@@ -32,6 +43,12 @@ public abstract class AbstractTick extends Randomiser {
         for (Agent agent: agents) possibleElectricity += agent.getTotalPotential();
     }
 
+    /**
+     * Iterates over one tick - representing one week. Updates the tick counter, removes bankrupt agents
+     * updates the electricity requirement and the individual electricity requirements per agent. Calculates
+     * whether a new power plant will be built and if so assigns it to an agent. Writes data to the data manager
+     * @return  The tick that has just been completed
+     */
     public int tick() {
         this.tick++;
 //        world.getController().updateTick(tick); // TODO commented whilst running without gui
@@ -92,30 +109,42 @@ public abstract class AbstractTick extends Randomiser {
         return PowerType.WIND;
     }
 
+    /**
+     * Getter for the world
+     * @return The world of the simulation
+     */
     public World getWorld() {
         return world;
     }
 
+    /**
+     * Getter for the current tick
+     * @return The current tick of the model
+     */
     public int getTick() {
         return tick;
     }
 
+    /**
+     * Getter for the data manager
+     * @return The data manager recording this iteration of the model
+     */
     public DataManager getDataManager() {
         return dataManager;
     }
 
-    public float getBuildChance() {
-        return newBuildChance;
-    }
-
-    public int getAgentCount() {
-        return agentCount;
-    }
-
+    /**
+     * Getter for the current agent list
+     * @return An array list containing all active agents
+     */
     public ArrayList<Agent> getAgents() {
         return agents;
     }
 
+    /**
+     * Getter for the maximum possible electricity generation per tick
+     * @return The current maximum possible electricity in GWh
+     */
     public float getPossibleElectricity() {
         return possibleElectricity;
     }
