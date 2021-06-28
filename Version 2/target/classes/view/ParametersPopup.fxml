@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="350.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.ParametersController">
+<AnchorPane prefHeight="350.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tjc.controller.ParametersController">
    <children>
       <Button fx:id="cancelButton" layoutX="27.0" layoutY="345.0" mnemonicParsing="false" onAction="#cancel" styleClass="button-cancel" stylesheets="@../css/popup.css" text="Cancel" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="20.0" />
       <Button layoutX="197.0" layoutY="345.0" mnemonicParsing="false" onAction="#accept" styleClass="button-accept" stylesheets="@../css/popup.css" text="Accept" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="20.0" />
