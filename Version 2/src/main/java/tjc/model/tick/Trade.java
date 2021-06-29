@@ -18,6 +18,7 @@ public class Trade extends AbstractTick {
 
     @Override
     public int tick() {
+        System.out.println(getTick() + "\t" + getAgents().size());
         getAgents().forEach(Agent::setUnused);
         distributeCredits();
         float base = calculateCreditBase();
@@ -26,6 +27,7 @@ public class Trade extends AbstractTick {
         System.out.println(totalPowerThisTick + "/" + getRequiredElectricity());
         Auction auction = new Auction(this, base, getDataManager());
         auction.commence();
+        if (getTick() % 1 == 0) getAgents().forEach(Agent::zeroCredits); // Clear credits every month
         cap -= capChange / 52;
         return super.tick();
     }

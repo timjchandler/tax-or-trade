@@ -74,7 +74,7 @@ public class Power extends Randomiser {
      * @return
      */
     public float carbonNormalisedIncome() {
-        return (production * World.getEnergyPrice()) / carbon;
+        return World.getEnergyPrice() / (carbon / production);
     }
 
     /**
@@ -138,5 +138,9 @@ public class Power extends Randomiser {
      */
     public void setUsedThisTick(boolean usedThisTick) {
         this.usedThisTick = usedThisTick;
+    }
+
+    public void resetUsedThisTick() {
+        usedThisTick = false;
     }
 }

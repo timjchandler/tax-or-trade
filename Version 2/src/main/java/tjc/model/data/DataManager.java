@@ -111,4 +111,8 @@ public class DataManager {
     public String getFilepath() {
         return save.getPath();
     }
+
+    public float getElectricityThisTick() {
+        return data.getTotalElectricity();
+    }
 }

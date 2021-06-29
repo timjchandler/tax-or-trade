@@ -154,4 +154,12 @@ public enum DataCGNW {
     public float getWindElectricity() {
         return windElectricity;
     }
+
+    /**
+     * Getter for the sum of all types of electricity generated
+     * @return The total sum of electricity generated this tick
+     */
+    public float getTotalElectricity() {
+        return coalElectricity + gasElectricity + nuclearElectricity + windElectricity;
+    }
 }

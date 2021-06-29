@@ -216,14 +216,14 @@ public class Agent {
         float maxPrice = -1;
         for (Power p: power) {
             if (!p.isUsedThisTick()) {
-                reqCarbon = p.getCarbon() * p.getProduction();
+                reqCarbon = p.getCarbon();
                 maxPrice = p.carbonNormalisedIncome() * 0.9f;
                 break;
             }
         }
         if (reqCarbon == -1 || maxPrice == -1) return -1;
         reqCarbon = Math.ceil(reqCarbon);
-        System.out.println("---   " + (int) reqCarbon);
+//        System.out.println("---   " + (int) reqCarbon);
         return value <= maxPrice ? (int) reqCarbon : -1;
     }
 
@@ -234,7 +234,6 @@ public class Agent {
     public void useCredits(int number, DataManager dm) {
         for (Power p: power) if (!p.isUsedThisTick()) {
             if (number > p.getCarbon()) {
-                System.out.println("Agent " + id + " bought and used " + number + " credits");
                 usePower(p, dm, false);
                 break;
             }
@@ -243,6 +242,10 @@ public class Agent {
     }
 
     public void setUnused() {
-        power.forEach(Power::resetIdle);
+        power.forEach(Power::resetUsedThisTick);
     }
+//
+//    public int acceptPrice(float price) {
+//
+//    }
 }
