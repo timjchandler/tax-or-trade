@@ -7,7 +7,10 @@ import tjc.model.power.Power;
 import java.util.ArrayList;
 import java.util.Collections;
 
-
+/**
+ * The agent class stores the information about a given agent and contains functions to manage the power plants
+ * held within it.
+ */
 public class Agent {
 
     private final int id;                   // A unique identifier for each agent, used primarily for debugging
@@ -16,7 +19,7 @@ public class Agent {
     private int credits;                    // The carbon credits held by the agent
     private float required;                 // The amount of electricity the agent should produce per tick
     private final AgentStats stats;         // The total and per tick electricity and carbon production of the agent as well as the revenue
-    private float generatedThisTick;
+//    private float generatedThisTick;
 
     /**
      * Constructor sets the unique identifier and the current tick, initialises the AgentStats and the power
@@ -64,25 +67,25 @@ public class Agent {
         for (Power p: toRemove) deletePower(p);
     }
 
-    /**
-     *
-     * @param base
-     * @param dataManager
-     * @return
-     */
-    public float initialCreditUpdate(float base, DataManager dataManager) {
-        power.sort(((o1, o2) -> Float.compare(o1.carbonNormalisedIncome(), o2.carbonNormalisedIncome())));
-        power.forEach((p) -> p.setUsedThisTick(false));
-        Collections.reverse(power);
-        generatedThisTick = 0;
-        for (Power p: power) {
-            if (p.carbonNormalisedIncome() < base || p.getCarbon() > credits) break;
-            generatedThisTick += usePower(p, dataManager, false);
-            credits -= p.getCarbon();
-            if (power.indexOf(p) == power.size() -1) break;
-        }
-        return generatedThisTick;
-    }
+//    /**
+//     *
+//     * @param base
+//     * @param dataManager
+//     * @return
+//     */
+//    public float initialCreditUpdate(float base, DataManager dataManager) {
+//        power.sort(((o1, o2) -> Float.compare(o1.carbonNormalisedIncome(), o2.carbonNormalisedIncome())));
+//        power.forEach((p) -> p.setUsedThisTick(false));
+//        Collections.reverse(power);
+//        generatedThisTick = 0;
+//        for (Power p: power) {
+//            if (p.carbonNormalisedIncome() < base || p.getCarbon() > credits) break;
+//            generatedThisTick += usePower(p, dataManager, false);
+//            credits -= p.getCarbon();
+//            if (power.indexOf(p) == power.size() -1) break;
+//        }
+//        return generatedThisTick;
+//    }
 
     /**
      * Use a power plant, storing the amounts of electricity, money and carbon dioxide being generated
@@ -100,9 +103,9 @@ public class Agent {
         return p.getProduction();
     }
 
-    public void decayIdle() {
-        for (Power p: power) if (!p.isUsedThisTick()) p.decayIdle();
-    }
+//    public void decayIdle() {
+//        for (Power p: power) if (!p.isUsedThisTick()) p.decayIdle();
+//    }
 
     /**
      * Removes a power plant
@@ -143,15 +146,15 @@ public class Agent {
         this.credits = 0;
     }
 
-    /**
-     * Gets the mean value of all power stations normalised per tonne of carbon
-     * @return  The mean value
-     */
-    public float getMeanCarbonValue() {
-        float total = 0;
-        for (Power p: power) total += p.carbonNormalisedIncome();
-        return total / power.size();
-    }
+//    /**
+//     * Gets the mean value of all power stations normalised per tonne of carbon
+//     * @return  The mean value
+//     */
+//    public float getMeanCarbonValue() {
+//        float total = 0;
+//        for (Power p: power) total += p.carbonNormalisedIncome();
+//        return total / power.size();
+//    }
 
     /**
      * Gets the mean income per tonne of carbon dioxide from the most efficient power plants
@@ -211,6 +214,15 @@ public class Agent {
         return credits;
     }
 
+    /**
+     * Decide on whether to put in a bid for a given value. The maximum value to offer is calculated
+     * based off the income per carbon unit for the current most efficient unused power plant. This is
+     * also weighted by the portion of credits left unused relative to the portion of the agents goal
+     * power generation.
+     * @param value             The value to accept or reject
+     * @param portionComplete   The portion of credits remaining
+     * @return                  The number of credits to buy at the given value
+     */
     public int decideBid(float value, float portionComplete) {
         double reqCarbon = -1;
         float maxPrice = -1;
@@ -223,16 +235,26 @@ public class Agent {
         }
         if (reqCarbon == -1 || maxPrice == -1) return -1;
         reqCarbon = Math.ceil(reqCarbon);
-        float weight  = (float) Math.pow(1 - portionComplete + getPortionOfRequired(), 2);
+        float weight  = 1 - portionComplete + getPortionOfRequired();
         if (weight < 0.1) weight = 0.1f;
         maxPrice = weight > 1 ? maxPrice : maxPrice / weight;
         return value <= maxPrice ? (int) reqCarbon : -1;
     }
 
+    /**
+     * Adds money to the agents reserves
+     * @param amount    The amount of money to add
+     */
     public void addMoney(float amount) {
         stats.updateMoney(amount);
     }
 
+    /**
+     * Use credits to run a power plant. Show an error if the number of credits being used is out
+     * by more than 1 from the required credits to run the current best power plant
+     * @param number    The number of credits
+     * @param dm        The data manager to pass through to usePower
+     */
     public void useCredits(int number, DataManager dm) {
         for (Power p: power) if (!p.isUsedThisTick()) {
             if (number > p.getCarbon() - 1 && number < p.getCarbon() + 1) {
@@ -243,10 +265,18 @@ public class Agent {
         }
     }
 
+    /**
+     * Gets the current portion fo the required electricity generation that has been achieved in the
+     * current tick
+     * @return  The portion of electricity generated
+     */
     private float getPortionOfRequired() {
         return stats.getElectricityTick() / required;
     }
 
+    /**
+     * Sets all held power plants as unused.
+     */
     public void setUnused() {
         power.forEach(Power::resetUsedThisTick);
     }
