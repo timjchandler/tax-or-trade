@@ -211,7 +211,7 @@ public class Agent {
         return credits;
     }
 
-    public int decideBid(float value) {
+    public int decideBid(float value, float portionComplete) {
         double reqCarbon = -1;
         float maxPrice = -1;
         for (Power p: power) {
@@ -223,7 +223,9 @@ public class Agent {
         }
         if (reqCarbon == -1 || maxPrice == -1) return -1;
         reqCarbon = Math.ceil(reqCarbon);
-//        System.out.println("---   " + (int) reqCarbon);
+        float weight  = (float) Math.pow(1 - portionComplete + getPortionOfRequired(), 2);
+        if (weight < 0.1) weight = 0.1f;
+        maxPrice = weight > 1 ? maxPrice : maxPrice / weight;
         return value <= maxPrice ? (int) reqCarbon : -1;
     }
 
@@ -233,7 +235,7 @@ public class Agent {
 
     public void useCredits(int number, DataManager dm) {
         for (Power p: power) if (!p.isUsedThisTick()) {
-            if (number > p.getCarbon()) {
+            if (number > p.getCarbon() - 1 && number < p.getCarbon() + 1) {
                 usePower(p, dm, false);
                 break;
             }
@@ -241,11 +243,12 @@ public class Agent {
         }
     }
 
+    private float getPortionOfRequired() {
+        return stats.getElectricityTick() / required;
+    }
+
     public void setUnused() {
         power.forEach(Power::resetUsedThisTick);
     }
-//
-//    public int acceptPrice(float price) {
-//
-//    }
+
 }

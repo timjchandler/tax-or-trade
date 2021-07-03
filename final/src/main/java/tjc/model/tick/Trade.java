@@ -18,19 +18,14 @@ public class Trade extends AbstractTick {
 
     @Override
     public int tick() {
-        System.out.println(getTick() + "\t" + getAgents().size());
         getAgents().forEach(Agent::setUnused);
         distributeCredits();
         float base = calculateCreditBase();
-        float totalPowerThisTick = 0;
-        for (Agent agent: getAgents()) totalPowerThisTick += agent.initialCreditUpdate(base, getDataManager());
-//        System.out.println(totalPowerThisTick + "/" + getRequiredElectricity());
+//        float totalPowerThisTick = 0;
+//        for (Agent agent: getAgents()) totalPowerThisTick += agent.initialCreditUpdate(base, getDataManager());
         Auction auction = new Auction(this, base, getDataManager());
         auction.commence();
-//        if (getTick() % 1 == 0)
-            getAgents().forEach(Agent::zeroCredits); // Clear credits every month
         cap -= capChange;
-        System.out.println("============ " + getTick() + " ... " + cap / 52 + " ... " + getDataManager().getCarbonThisTick());
         return super.tick();
     }
 
@@ -40,42 +35,11 @@ public class Trade extends AbstractTick {
             agent.addCredits(allowance);
         }
     }
-//
-//    private void zeroCredits() {
-//        for (Agent agent: getAgents()) agent.zeroCredits();
-//    }
-//
-//    private float calculateBaseCreditPrice() {
-//        float totalValue = 0;
-//        int count = 0;
-//        for (Agent agent: getAgents()) {
-//            totalValue += agent.getMeanCarbonValue();
-//            count += agent.getPower().size();
-//        }
-//        return totalValue / count;
-//    }
 
     private float calculateCreditBase() {
         float total = 0;
         for (Agent agent: getAgents()) total += agent.getMeanRequiredCapIncome();
         return total / getAgents().size();
     }
-//
-//    /**
-//     * Getter for the proportion of the required production of an agent that must always be completed
-//     * per tick
-//     * @return  The required proportion
-//     */
-//    public float getRequiredProportion() {
-//        return requiredProportion;
-//    }
-//
-//    /**
-//     * Setter for the proportion of an agents required production that must always be completed
-//     * per tick
-//     * @param requiredProportion The proportion of an agents power that must be produced
-//     */
-//    public void setRequiredProportion(float requiredProportion) {
-//        this.requiredProportion = requiredProportion;
-//    }
+
 }

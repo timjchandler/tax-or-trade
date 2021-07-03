@@ -9,14 +9,18 @@ public class Main {
         else {
             int runs = Integer.parseInt(args[0]);
             int seed = Integer.parseInt(args[1]);
-            int isTax = Integer.parseInt(args[2]);
             for (int idx = 0; idx < runs; ++ idx) {
                 World world = new World(idx + seed);
-                if (isTax == 1) world.setTaxOrTrade(true);
-                else world.setTaxOrTrade(false);
+                world.setTaxOrTrade(true);
                 world.start();
             }
-            System.out.println("Finished " + runs + " runs with seeds in the range [" + seed + ", " + (seed + runs - 1) + "]");
+            System.out.println("Finished " + runs + " Tax runs with seeds in the range [" + seed + ", " + (seed + runs - 1) + "]");
+            for (int idx = 0; idx < runs; ++ idx) {
+                World world = new World(idx + seed);
+                world.setTaxOrTrade(false);
+                world.start();
+            }
+            System.out.println("Finished " + runs + " Trade runs with seeds in the range [" + seed + ", " + (seed + runs - 1) + "]");
         }
     }
 

@@ -13,6 +13,7 @@ public class Auction {
 
     private Trade trade;
     private long totalCredits;
+    private long initialCredits;
     private float price;
     private final float initialPrice;
     private DataManager dm;
@@ -29,43 +30,21 @@ public class Auction {
             map.put(agent, agent.getCredits());
             agent.zeroCredits();
         }
+        initialCredits = totalCredits;
     }
-
-//    public void start() {
-//        float priceDecrease = 0.02f * initialPrice;
-//        while (price > 0) {
-//            handleBids();
-//        }
-//    }
-
-
 
     public void commence() {
-//        while (handleBidding()) price -= 0.01 * initialPrice;
         while(handleBids()) price -= 0.01 * initialPrice;
-//        trade.getAgents().forEach(Agent::decayIdle);
         reassignCredits();
-    }
-
-    private boolean handleBidding() {
-        for (Agent agent: trade.getAgents()) {
-            int bought = agent.decideBid(price);
-            if (bought > 0 && bought <= totalCredits) {
-                agent.useCredits(bought, dm);
-                totalCredits -= bought;
-                paySellers(bought, agent);
-            } else if (bought > totalCredits || price < 0 ||
-                    dm.getElectricityThisTick() > trade.getRequiredElectricity()) return false;
-        }
-        return true;
     }
 
     private boolean handleBids() {
         for (Map.Entry<Agent, Integer> entry: map.entrySet()) {
-            int bought = entry.getKey().decideBid(price);
+            float progress = ((float) totalCredits) / ((float) initialCredits);
+            int bought = entry.getKey().decideBid(price, progress);
             if (bought > totalCredits || price == 0 ||
-                    dm.getElectricityThisTick() > trade.getRequiredElectricity()) return false;
-            if (entry.getKey().decideBid(price) > 0) {
+                    dm.getElectricityThisTick() > trade.getRequiredElectricity() * 1.1) return false;
+            if (entry.getKey().decideBid(price, progress) > 0) {
                 if (entry.getValue() > bought) {
                     entry.setValue(entry.getValue() - bought);
                     entry.getKey().useCredits(bought, dm);
