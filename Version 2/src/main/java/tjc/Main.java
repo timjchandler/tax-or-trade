@@ -30,13 +30,17 @@ public class Main extends Application {
     public static void main(String[] args) {
         if (args.length == 0) launch(args);
         else {
-            if (args[0].equals("-h") || args[0].equals("help")) help();
-            World world = new World(Integer.parseInt(args[0]));
-            if (args.length == 3) {
-                world.setTaxRate(Float.parseFloat(args[1]));
-                world.setTaxIncrement(Float.parseFloat(args[2]));
+            for (int idx = 0; idx < 100; ++ idx) {
+                World world = new World(idx);
+                world.start();
             }
-            world.start();
+//            if (args[0].equals("-h") || args[0].equals("help")) help();
+//            World world = new World(Integer.parseInt(args[0]));
+//            if (args.length == 3) {
+//                world.setTaxRate(Float.parseFloat(args[1]));
+//                world.setTaxIncrement(Float.parseFloat(args[2]));
+//            }
+//            world.start();
         }
     }
 

@@ -115,4 +115,8 @@ public class DataManager {
     public float getElectricityThisTick() {
         return data.getTotalElectricity();
     }
+
+    public float getCarbonThisTick() {
+        return data.getTotalCarbon();
+    }
 }

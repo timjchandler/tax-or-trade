@@ -51,7 +51,7 @@ public abstract class AbstractTick extends Randomiser {
      */
     public int tick() {
         this.tick++;
-        cleanAgents();
+//        cleanAgents();
         requiredElectricity *= electricityIncrement;
         setAgentsRequiredElectricity();
         if (getInt(100) < 100 * newBuildChance)

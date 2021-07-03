@@ -6,14 +6,14 @@ import tjc.model.agent.Agent;
 public class Trade extends AbstractTick {
 
     private float cap;
-    private float capChange;
-    private float requiredProportion;
+    private final float capChange;
+//    private float requiredProportion;
 
     public Trade(World world, float cap, float capChange) {
         super(world);
         this.cap = cap;
-        this.capChange = capChange;
-        this.requiredProportion = 0.5f;
+        this.capChange = capChange / 52;
+//        this.requiredProportion = 0.5f;
     }
 
     @Override
@@ -24,11 +24,13 @@ public class Trade extends AbstractTick {
         float base = calculateCreditBase();
         float totalPowerThisTick = 0;
         for (Agent agent: getAgents()) totalPowerThisTick += agent.initialCreditUpdate(base, getDataManager());
-        System.out.println(totalPowerThisTick + "/" + getRequiredElectricity());
+//        System.out.println(totalPowerThisTick + "/" + getRequiredElectricity());
         Auction auction = new Auction(this, base, getDataManager());
         auction.commence();
-        if (getTick() % 1 == 0) getAgents().forEach(Agent::zeroCredits); // Clear credits every month
-        cap -= capChange / 52;
+//        if (getTick() % 1 == 0)
+            getAgents().forEach(Agent::zeroCredits); // Clear credits every month
+        cap -= capChange;
+        System.out.println("============ " + getTick() + " ... " + cap / 52 + " ... " + getDataManager().getCarbonThisTick());
         return super.tick();
     }
 
@@ -38,42 +40,42 @@ public class Trade extends AbstractTick {
             agent.addCredits(allowance);
         }
     }
-
-    private void zeroCredits() {
-        for (Agent agent: getAgents()) agent.zeroCredits();
-    }
-
-    private float calculateBaseCreditPrice() {
-        float totalValue = 0;
-        int count = 0;
-        for (Agent agent: getAgents()) {
-            totalValue += agent.getMeanCarbonValue();
-            count += agent.getPower().size();
-        }
-        return totalValue / count;
-    }
+//
+//    private void zeroCredits() {
+//        for (Agent agent: getAgents()) agent.zeroCredits();
+//    }
+//
+//    private float calculateBaseCreditPrice() {
+//        float totalValue = 0;
+//        int count = 0;
+//        for (Agent agent: getAgents()) {
+//            totalValue += agent.getMeanCarbonValue();
+//            count += agent.getPower().size();
+//        }
+//        return totalValue / count;
+//    }
 
     private float calculateCreditBase() {
         float total = 0;
         for (Agent agent: getAgents()) total += agent.getMeanRequiredCapIncome();
         return total / getAgents().size();
     }
-
-    /**
-     * Getter for the proportion of the required production of an agent that must always be completed
-     * per tick
-     * @return  The required proportion
-     */
-    public float getRequiredProportion() {
-        return requiredProportion;
-    }
-
-    /**
-     * Setter for the proportion of an agents required production that must always be completed
-     * per tick
-     * @param requiredProportion The proportion of an agents power that must be produced
-     */
-    public void setRequiredProportion(float requiredProportion) {
-        this.requiredProportion = requiredProportion;
-    }
+//
+//    /**
+//     * Getter for the proportion of the required production of an agent that must always be completed
+//     * per tick
+//     * @return  The required proportion
+//     */
+//    public float getRequiredProportion() {
+//        return requiredProportion;
+//    }
+//
+//    /**
+//     * Setter for the proportion of an agents required production that must always be completed
+//     * per tick
+//     * @param requiredProportion The proportion of an agents power that must be produced
+//     */
+//    public void setRequiredProportion(float requiredProportion) {
+//        this.requiredProportion = requiredProportion;
+//    }
 }

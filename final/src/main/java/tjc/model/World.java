@@ -64,7 +64,6 @@ public class World extends Randomiser {
             agents.get(getInt(agentCount)).addPower(power);
             count++;
         }
-        System.out.println(count + "\t" + type.toString());
         return set;
     }
 
@@ -74,14 +73,13 @@ public class World extends Randomiser {
      */
     private void buildWorld(float totalEnergy) {
         dataManager = new DataManager(this);
-        totalEnergy *= 2f;
+        totalEnergy *= 1.5f;
         createAgents(agentCount);
         float set = 0;
         set += setupPower(totalEnergy * split.getCoal(), PowerType.COAL);
         set += setupPower(totalEnergy * split.getGas(), PowerType.GAS);
         set += setupPower(totalEnergy * split.getWind(), PowerType.WIND);
         set += setupPower(totalEnergy * split.getNuclear(), PowerType.NUCLEAR);
-        System.out.println("TOTAL: " + totalEnergy + "\tSET: " + set);
 
         float baseMoney = 15 * set * energyPrice / agentCount;
         for (Agent agent: agents) agent.setStartMoney(getNormal(baseMoney));
@@ -137,7 +135,6 @@ public class World extends Randomiser {
         buildWorld(requiredElectricity);
         int totalPlants = 0;
         for (Agent agent: agents) totalPlants += agent.getPower().size();
-        System.out.println(":: " + agents.size() + " agents, " + totalPlants + " power plants");
         for (int completedTick = tick(); completedTick < totalTicks;) completedTick = tick();
     }
 

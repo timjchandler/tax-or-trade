@@ -28,8 +28,8 @@ public class World extends Randomiser {
     private static float taxRate = 0.01f;           // The current tax rate in 1000Euros per Tonne
     private float taxIncrement= 0.005f;         // The yearly increase to the tax rate
     private static float taxLimit = 0.1f;            // The maximum tax amount
-    private float cap = 1700000000f;                          // The current cap on carbon emissions
-    private float capIncrement = 0000000f;                 // The yearly amount by which to increase/decrease the cap
+    private float cap = 500000000f;                          // The current cap on carbon emissions
+    private float capIncrement = 1000000f;                 // The yearly amount by which to increase/decrease the cap
     private float requiredElectricity = 8000;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
     private static final float energyPrice = 250f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
     private DataManager dataManager = null;

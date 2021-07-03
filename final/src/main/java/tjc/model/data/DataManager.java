@@ -41,7 +41,6 @@ public class DataManager {
         }
         try {
             if (!save.createNewFile()) System.out.println(":: ERROR: The file " + world.getSaveName() + " could not be created. This could be due to a file existing with that name that was not cleaned up.");
-            System.out.println(":: New save file - " + save.getAbsolutePath());
         } catch (IOException e) {
             System.out.println(":: ERROR: Could not create file " + world.getSaveName());
         }

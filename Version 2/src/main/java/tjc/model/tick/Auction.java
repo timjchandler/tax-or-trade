@@ -38,21 +38,13 @@ public class Auction {
 //        }
 //    }
 
-//    private void handleBids() {
-//        for (Map.Entry<Agent, Integer> entry: map.entrySet()) {
-//            if (entry.getKey().acceptPrice(price) > 0) {
-//                // TODO: if has credits use own, else buy
-//            }
-//        }
-//    }
+
 
     public void commence() {
-//        System.out.println(price);
-        System.out.println(totalCredits);
-        while (handleBidding()) price -= 0.01 * initialPrice;
-        trade.getAgents().forEach(Agent::decayIdle);
+//        while (handleBidding()) price -= 0.01 * initialPrice;
+        while(handleBids()) price -= 0.01 * initialPrice;
+//        trade.getAgents().forEach(Agent::decayIdle);
         reassignCredits();
-        System.out.println(totalCredits);
     }
 
     private boolean handleBidding() {
@@ -67,6 +59,34 @@ public class Auction {
         }
         return true;
     }
+
+    private boolean handleBids() {
+        for (Map.Entry<Agent, Integer> entry: map.entrySet()) {
+            int bought = entry.getKey().decideBid(price);
+            if (bought > totalCredits || price == 0 ||
+                    dm.getElectricityThisTick() > trade.getRequiredElectricity()) return false;
+            if (entry.getKey().decideBid(price) > 0) {
+                if (entry.getValue() > bought) {
+                    entry.setValue(entry.getValue() - bought);
+                    entry.getKey().useCredits(bought, dm);
+
+                } else {
+//                    gatherCredits(bought, entry.getKey());
+                    paySellers(bought, entry.getKey());
+                }
+                totalCredits -= bought;
+                // TODO: if has credits use own, else buy
+            }
+        }
+        return true;
+    }
+//
+//    private void gatherCredits(int bought, Agent buyer) {
+//        for (Map.Entry<Agent, Integer> entry: map.entrySet()) {
+//            if (entry.getKey().equals(buyer)) continue;
+//
+//        }
+//    }
 
     private void paySellers(int credits, Agent buyer, int remainingSellers) {
         int epsilon = 1000;

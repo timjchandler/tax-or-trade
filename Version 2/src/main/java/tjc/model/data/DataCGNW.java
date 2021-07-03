@@ -162,4 +162,8 @@ public enum DataCGNW {
     public float getTotalElectricity() {
         return coalElectricity + gasElectricity + nuclearElectricity + windElectricity;
     }
+
+    public float getTotalCarbon() {
+        return coalCarbon + gasCarbon + nuclearCarbon + windCarbon;
+    }
 }
