@@ -69,7 +69,10 @@ public enum PowerType {
      * Calculate the possible profits based on current tax rate and energy price
      * @return The typical profits for this power type
      */
-    public float possibleProfits() {
-        return World.getEnergyPrice() - (meanCarbon * Tax.getTaxRate() + upkeepWeight);
+    public float possibleProfits(float modifier) {
+        return (World.getEnergyPrice() - meanCost) / (meanCarbon * modifier);
     }
+//    public float possibleProfits(float modifier) {
+//        return World.getEnergyPrice() - (meanCarbon * modifier + upkeepWeight);
+//    }
 }

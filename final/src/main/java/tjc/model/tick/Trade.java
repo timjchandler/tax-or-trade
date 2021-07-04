@@ -10,6 +10,7 @@ public class Trade extends AbstractTick {
 
     private float cap;                  // The current cap for Carbon Dioxide emissions
     private final float capChange;      // The reduction in the Carbon Dioxide cap per tick
+    private static float baseForEstimates;
 
     /**
      * Constructor sets the cap and change rates as well as storing the world object
@@ -31,11 +32,16 @@ public class Trade extends AbstractTick {
     @Override
     public int tick() {
         getAgents().forEach(Agent::setUnused);
+        getAgents().forEach(Agent::sortPowerNormalised);
         distributeCredits();
         float base = calculateCreditBase();
         Auction auction = new Auction(this, base, getDataManager());
         auction.commence();
+//        getAgents().forEach(Agent::cleanUpPower);
         cap -= capChange;
+//        for (Agent agent: getAgents())
+//            System.out.print(agent.getId() + ": " + agent.getPower().size() + "\t");
+//        System.out.println("");
         return super.tick();
     }
 
@@ -44,6 +50,7 @@ public class Trade extends AbstractTick {
      * regards to the overall power generation possible.
      */
     private void distributeCredits() {
+        getAgents().forEach(Agent::zeroCredits);
         for (Agent agent: getAgents()) {
             int allowance = (int) ((cap / 52) * agent.getTotalPotential() / getPossibleElectricity());
             agent.addCredits(allowance);
@@ -57,6 +64,11 @@ public class Trade extends AbstractTick {
     private float calculateCreditBase() {
         float total = 0;
         for (Agent agent: getAgents()) total += agent.getMeanRequiredCapIncome();
-        return total / getAgents().size();
+        baseForEstimates = total / getAgents().size();
+        return baseForEstimates;
+    }
+
+    public static float getBaseForEstimates() {
+        return baseForEstimates;
     }
 }

@@ -99,7 +99,9 @@ public class Agent {
         else stats.updateMoney(p.calculateIncomeFromTrade());
         stats.updateCarbon(p.getCarbon());
         dm.add(p);
+        p.resetIdle();
         p.setUsedThisTick(true);
+//        p.showUsage();              //FIXME debug remove
         return p.getProduction();
     }
 
@@ -238,7 +240,7 @@ public class Agent {
         float weight  = 1 - portionComplete + getPortionOfRequired();
         if (weight < 0.1) weight = 0.1f;
         maxPrice = weight > 1 ? maxPrice : maxPrice / weight;
-        return value <= maxPrice ? (int) reqCarbon : -1;
+        return value <= maxPrice && getMoneyTot() > maxPrice * reqCarbon ? (int) reqCarbon : -1;
     }
 
     /**
@@ -281,4 +283,25 @@ public class Agent {
         power.forEach(Power::resetUsedThisTick);
     }
 
+    public void sortPowerNormalised() {
+        power.sort(((o1, o2) -> Float.compare(o1.carbonNormalisedIncome(), o2.carbonNormalisedIncome())));
+        Collections.reverse(power);
+    }
+
+
+    public void showCurrentMoney() {
+        System.out.println(stats.getMoneyTot());
+    }
+
+    public void costUnused() {
+        float costs = 0;
+        for (Power p: power) costs += p.getUnusedCost();
+        addMoney(-1 * costs);
+    }
+
+    public void cleanUpPower() {
+        ArrayList<Power> toRemove = new ArrayList<>();
+        for (Power p: power) if (!p.decayIdle()) toRemove.add(p);
+        for (Power p: toRemove) deletePower(p);
+    }
 }

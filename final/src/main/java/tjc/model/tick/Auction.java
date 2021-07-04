@@ -11,13 +11,13 @@ import java.util.Map;
  */
 public class Auction {
 
-    private Trade trade;
-    private long totalCredits;
-    private long initialCredits;
-    private float price;
+    private final Trade trade;
+    private final DataManager dm;
+    private final HashMap<Agent, Integer> map;
     private final float initialPrice;
-    private DataManager dm;
-    private HashMap<Agent, Integer> map;
+    private final long initialCredits;
+    private float price;
+    private long totalCredits;
 
     public Auction(Trade trade, float initialPrice, DataManager dm) {
         this.trade = trade;
@@ -34,7 +34,7 @@ public class Auction {
     }
 
     public void commence() {
-        while(handleBids()) price -= 0.01 * initialPrice;
+        while(handleBids() && price > 0) price -= 0.01 * initialPrice;
         reassignCredits();
     }
 
@@ -50,22 +50,14 @@ public class Auction {
                     entry.getKey().useCredits(bought, dm);
 
                 } else {
-//                    gatherCredits(bought, entry.getKey());
+                    entry.getKey().addMoney(-1 * bought * price);
                     paySellers(bought, entry.getKey());
                 }
                 totalCredits -= bought;
-                // TODO: if has credits use own, else buy
             }
         }
         return true;
     }
-//
-//    private void gatherCredits(int bought, Agent buyer) {
-//        for (Map.Entry<Agent, Integer> entry: map.entrySet()) {
-//            if (entry.getKey().equals(buyer)) continue;
-//
-//        }
-//    }
 
     private void paySellers(int credits, Agent buyer, int remainingSellers) {
         int epsilon = 1000;

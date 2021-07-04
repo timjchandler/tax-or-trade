@@ -30,6 +30,7 @@ public class Power extends Randomiser {
         this.production = getNormal(type.getMeanPower());
         this.runningCost = getNormal(type.getMeanCost(), 0) * this.production;
         this.carbon = getNormal(type.getMeanCarbon()) * this.production;
+        this.usedThisTick = false;
         resetIdle();
     }
 
@@ -57,16 +58,6 @@ public class Power extends Randomiser {
     public float normalisedIncomeFromTax() {
         return calculateIncomeFromTax() / production;
     }
-
-//    /**
-//     * TODO !!!
-//     * @return
-//     */
-//    public float normalisedIncomeFromTrade() {
-//        float revenue = production * World.getEnergyPrice();
-//        float costs = carbon * Trade.getCreditPrice() + runningCost;
-//        return (revenue - costs) / production;
-//    }
 
     /**
      * TODO: Check this!!!
@@ -141,5 +132,26 @@ public class Power extends Randomiser {
 
     public void resetUsedThisTick() {
         usedThisTick = false;
+    }
+
+    public int getIdleTime() {
+        return idleTime;
+    }
+
+    public float getUnusedCost() {
+        return runningCost * 0.5f - idleTime * 0.05f;
+    }
+
+
+    private boolean dynamicallyAdded;           // FIXME debug, remove
+    public boolean isDynamicallyAdded() {
+        return dynamicallyAdded;
+    }
+    public void setDynamicallyAdded(boolean dynamicallyAdded) {
+        this.dynamicallyAdded = dynamicallyAdded;
+    }
+    public void showUsage() {
+        if (dynamicallyAdded) System.out.println("New station of type " + type + " used");
+        dynamicallyAdded = false;
     }
 }

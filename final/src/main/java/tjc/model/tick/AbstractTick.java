@@ -54,9 +54,14 @@ public abstract class AbstractTick extends Randomiser {
         cleanAgents();
         requiredElectricity *= electricityIncrement;
         setAgentsRequiredElectricity();
-        if (getInt(100) < 100 * newBuildChance)
-            agents.get(getInt(agentCount)).addPower(new Power(chooseNewPower()));
+        if (getInt(100) < 100 * newBuildChance){
+            Power newPower = new Power(chooseNewPower());   //FIXME debug, remove
+//            newPower.setDynamicallyAdded(true);             //FIXME debug, remove
+//            System.out.println("Added " + newPower.getType());//FIXME debug, remove
+            agents.get(getInt(agentCount)).addPower(newPower);
+        }
         dataManager.write(tick);
+        agents.forEach(Agent::costUnused);
         return tick;
     }
 
@@ -75,7 +80,7 @@ public abstract class AbstractTick extends Randomiser {
             }
         }
         for (Agent agent: toRemove) agents.remove(agent);
-        for (Power power: toRedistribute) agents.get(getInt(agentCount)).addPower(power);
+        for (Power power: toRedistribute) if (power.getIdleTime() == 0) agents.get(getInt(agentCount)).addPower(power);
     }
 
     /**
@@ -96,10 +101,11 @@ public abstract class AbstractTick extends Randomiser {
      * @return The type of power plant to build
      */
     private PowerType chooseNewPower() {
-        float coal = (float) Math.pow(PowerType.COAL.possibleProfits(), 2) / PowerType.COAL.getMeanPower();
-        float gas = (float) Math.pow(PowerType.GAS.possibleProfits(), 2) / PowerType.GAS.getMeanPower();
-        float nuclear = (float) Math.pow(PowerType.NUCLEAR.possibleProfits(), 2) / PowerType.NUCLEAR.getMeanPower();
-        float wind = (float) Math.pow(PowerType.WIND.possibleProfits(), 2) / PowerType.WIND.getMeanPower();
+        float modifier = World.isIsTaxNotTrade() ? Tax.getTaxRate() : Trade.getBaseForEstimates();
+        float coal = (float) Math.pow(PowerType.COAL.possibleProfits(modifier), 2) / PowerType.COAL.getMeanPower();
+        float gas = (float) Math.pow(PowerType.GAS.possibleProfits(modifier), 2) / PowerType.GAS.getMeanPower();
+        float nuclear = (float) Math.pow(PowerType.NUCLEAR.possibleProfits(modifier), 2) / PowerType.NUCLEAR.getMeanPower();
+        float wind = (float) Math.pow(PowerType.WIND.possibleProfits(modifier), 2) / PowerType.WIND.getMeanPower();
         float total = coal + gas + nuclear + wind;
         int choice = getInt(100);
         if (choice < 100 * coal / total) return PowerType.COAL;

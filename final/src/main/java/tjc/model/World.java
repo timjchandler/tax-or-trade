@@ -20,7 +20,7 @@ public class World extends Randomiser {
     private PowerSplit split;               // The split of power types
     private int agentCount;                 // The number of agents
     private final ArrayList<Agent> agents;  // The list of agents
-    private boolean isTaxNotTrade = false;   // The type of simulation: true for tax, false for cap and trade
+    private static boolean isTaxNotTrade = false;   // The type of simulation: true for tax, false for cap and trade
     private int totalTicks = 676;           // The total ticks to run for 104 (2 years) if not set
     private String preset = "US-2007";
 
@@ -73,7 +73,7 @@ public class World extends Randomiser {
      */
     private void buildWorld(float totalEnergy) {
         dataManager = new DataManager(this);
-        totalEnergy *= 1.5f;
+        totalEnergy *= 2f;
         createAgents(agentCount);
         float set = 0;
         set += setupPower(totalEnergy * split.getCoal(), PowerType.COAL);
@@ -122,9 +122,21 @@ public class World extends Randomiser {
      * Iterates over a tick, calling the relevant tick manager for the current model
      * @return  The tick that has been completed
      */
-    public int tick() {
-        if (isTaxNotTrade) return tax.tick();
-        else return trade.tick();
+    public int tick()   {
+        if (isTaxNotTrade) {
+            if (tax.getAgents().size() < 1) {
+                System.out.println("Ending run of tax with seed " + getSeed() + " due to lack of agents.");
+                return totalTicks;
+            }
+            return tax.tick();
+        }
+        else {
+            if (trade.getAgents().size() < 1) {
+                System.out.println("Ending run of trade with seed " + getSeed() + " due to lack of agents.");
+                return totalTicks;
+            }
+            return trade.tick();
+        }
     }
 
     /**
@@ -136,14 +148,6 @@ public class World extends Randomiser {
         int totalPlants = 0;
         for (Agent agent: agents) totalPlants += agent.getPower().size();
         for (int completedTick = tick(); completedTick < totalTicks;) completedTick = tick();
-    }
-
-    /**
-     * Updates the seed in Randomiser, updates the save file name
-     * @param seed  The new seed to be set
-     */
-    public void updateSeed(int seed) {
-        setSeed(seed);
     }
 
     /**
@@ -362,5 +366,9 @@ public class World extends Randomiser {
 
     public static float getTaxLimit() {
         return taxLimit;
+    }
+
+    public static boolean isIsTaxNotTrade() {
+        return isTaxNotTrade;
     }
 }
