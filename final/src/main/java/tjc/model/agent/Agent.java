@@ -57,7 +57,6 @@ public class Agent {
         Collections.reverse(power);
         float totalElecticity = 0;
         ArrayList<Power> toRemove = new ArrayList<>();
-
         for(Power p: power) {
             if (totalElecticity > required) {
                 if (!p.decayIdle()) toRemove.add(p);
@@ -66,26 +65,6 @@ public class Agent {
         }
         for (Power p: toRemove) deletePower(p);
     }
-
-//    /**
-//     *
-//     * @param base
-//     * @param dataManager
-//     * @return
-//     */
-//    public float initialCreditUpdate(float base, DataManager dataManager) {
-//        power.sort(((o1, o2) -> Float.compare(o1.carbonNormalisedIncome(), o2.carbonNormalisedIncome())));
-//        power.forEach((p) -> p.setUsedThisTick(false));
-//        Collections.reverse(power);
-//        generatedThisTick = 0;
-//        for (Power p: power) {
-//            if (p.carbonNormalisedIncome() < base || p.getCarbon() > credits) break;
-//            generatedThisTick += usePower(p, dataManager, false);
-//            credits -= p.getCarbon();
-//            if (power.indexOf(p) == power.size() -1) break;
-//        }
-//        return generatedThisTick;
-//    }
 
     /**
      * Use a power plant, storing the amounts of electricity, money and carbon dioxide being generated
@@ -101,13 +80,8 @@ public class Agent {
         dm.add(p);
         p.resetIdle();
         p.setUsedThisTick(true);
-//        p.showUsage();              //FIXME debug remove
         return p.getProduction();
     }
-
-//    public void decayIdle() {
-//        for (Power p: power) if (!p.isUsedThisTick()) p.decayIdle();
-//    }
 
     /**
      * Removes a power plant
@@ -147,16 +121,6 @@ public class Agent {
     public void zeroCredits() {
         this.credits = 0;
     }
-
-//    /**
-//     * Gets the mean value of all power stations normalised per tonne of carbon
-//     * @return  The mean value
-//     */
-//    public float getMeanCarbonValue() {
-//        float total = 0;
-//        for (Power p: power) total += p.carbonNormalisedIncome();
-//        return total / power.size();
-//    }
 
     /**
      * Gets the mean income per tonne of carbon dioxide from the most efficient power plants
@@ -298,10 +262,10 @@ public class Agent {
         for (Power p: power) costs += p.getUnusedCost();
         addMoney(-1 * costs);
     }
-
-    public void cleanUpPower() {
-        ArrayList<Power> toRemove = new ArrayList<>();
-        for (Power p: power) if (!p.decayIdle()) toRemove.add(p);
-        for (Power p: toRemove) deletePower(p);
-    }
+//
+//    public void cleanUpPower() {
+//        ArrayList<Power> toRemove = new ArrayList<>();
+//        for (Power p: power) if (!p.decayIdle()) toRemove.add(p);
+//        for (Power p: toRemove) deletePower(p);
+//    }
 }

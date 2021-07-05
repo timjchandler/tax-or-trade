@@ -8,18 +8,16 @@ plt.style.use('seaborn')
 
 class analysis:
 
-    def __init__(self, runs, seed, initialTrade, incrementTrade, initialTax, incrementTax, preset):
+    def __init__(self, runs, seed, tax, trade, runLength, preset):
         self.runs = runs
         self.seed = seed
-        self.initialTrade = initialTrade
-        self.incremenetTrade = incrementTrade
-        self.initialTax = initialTax
-        self.incrementTax = incrementTax
+        self.trade = trade
+        self.tax = tax
+        self.ticks = runLength * 52
         self.preset = preset
 
     def getJarArguments(self):
-        out = ' ' + str(self.runs) + ' ' + str(self.seed)
-        # TODO add more - both here and in the model
+        out = ' ' + str(self.runs) + ' ' + str(self.seed) + ' ' + str(self.tax) + ' ' + str(self.trade) + ' ' + str(self.ticks) + ' ' + self.preset
         return out
 
     def plotArea(self):
@@ -34,16 +32,27 @@ class analysis:
     def plotComparison(self):
         taxMeanC, taxMeanE = self.__getCE(True)
         tradeMeanC, tradeMeanE = self.__getCE(False)
-        taxMeanC = taxMeanC.sum(axis=1)
-        tradeMeanC = tradeMeanC.sum(axis=1)        
-        ax1 = sns.lineplot(hue="region", data=taxMeanC, ci='sd')
-        ax2 = sns.lineplot(hue="region", data=tradeMeanC, ci='sd')
+        taxMeanC['Ticks'] = taxMeanC.index + 1
+        taxMeanE['Ticks'] = taxMeanE.index + 1
+        tradeMeanC['Ticks'] = tradeMeanC.index + 1
+        tradeMeanE['Ticks'] = tradeMeanE.index + 1
+        taxMeanC["Total Carbon Dioxide"] = taxMeanC["Coal_Carbon"] + taxMeanC["Gas_Carbon"] + taxMeanC["Wind_Carbon"] + taxMeanC["Nuclear_Carbon"]
+        taxMeanE["Total Electricity"] = taxMeanE["Coal_Electricity"] + taxMeanE["Gas_Electricity"] + taxMeanE["Wind_Electricity"] + taxMeanE["Nuclear_Electricity"]
+        filename = str(self.tax) + '.csv'
+        from pathlib import Path
+        taxMeanE.to_csv(Path('clean/e' + filename))
+        taxMeanC.to_csv(Path('clean/c' + filename))
+        tradeMeanC["Total Carbon Dioxide"] = tradeMeanC["Coal_Carbon"] + tradeMeanC["Gas_Carbon"] + tradeMeanC["Wind_Carbon"] + tradeMeanC["Nuclear_Carbon"]
+        tradeMeanE["Total Electricity"] = tradeMeanE["Coal_Electricity"] + tradeMeanE["Gas_Electricity"] + tradeMeanE["Wind_Electricity"] + tradeMeanE["Nuclear_Electricity"]      
+        filename = str(self.trade) + ".csv"
+        tradeMeanE.to_csv(Path('clean/e' + filename))
+        tradeMeanC.to_csv(Path('clean/c' + filename))
+        ax1 = sns.lineplot(x="Ticks", y="Total Carbon Dioxide", data=taxMeanC, ci='sd')
+        ax2 = sns.lineplot(x="Ticks", y="Total Carbon Dioxide", data=tradeMeanC, ci='sd')
         ax2.set(xlabel="Time (ticks)", ylabel="Carbon Dioxide (million tonnes)")
         plt.show()
-        taxMeanE = taxMeanE.sum(axis=1)
-        tradeMeanE = tradeMeanE.sum(axis=1) 
-        ax1 = sns.lineplot(hue="region", data=taxMeanE, ci='sd')
-        ax2 = sns.lineplot(hue="region", data=tradeMeanE, ci='sd')
+        ax1 = sns.lineplot(x="Ticks", y="Total Electricity", data=taxMeanE, ci='sd')
+        ax2 = sns.lineplot(x="Ticks", y="Total Electricity", data=tradeMeanE, ci='sd')
         ax2.set(xlabel="Time (ticks)", ylabel="Electricity Generated (TWh)")
         plt.show()
 
@@ -51,9 +60,9 @@ class analysis:
     def __buildFilePath(self, isTax):
         filepath = 'seed-' + str(self.seed)
         if isTax:
-            filepath += '-tax-' + self.initialTax + '-inc-' + self.incrementTax
+            filepath += '-tax-' + str(self.tax)
         else:
-            filepath += '-trade-' + self.initialTrade + '-inc-' + self.incremenetTrade
+            filepath += '-trade-' + str(self.trade)[0] + "_" + (str(self.trade)[2] if len(str(self.trade)) > 1 else '0')
         filepath += '-preset-' + self.preset + '.csv'
         return filepath
 
@@ -106,10 +115,12 @@ class analysis:
 
     def __getCombinedDF(self, isTax):
         df = self.__getDFwithInput(isTax)
-
-        for i in range(0, self.runs):
-            curr = self.seed + i
+        initialSeed = self.seed
+        finalSeed = self.seed + self.runs
+        for i in range(initialSeed, finalSeed):
+            self.seed = i
             temp = self.__getDFwithInput(isTax)
             df = pd.concat((df, temp))
 
+        self.seed = initialSeed
         return df

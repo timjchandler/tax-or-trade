@@ -14,10 +14,10 @@ import tjc.model.tick.Tax;
  */
 public enum PowerType {
 
-    WIND        (25, 45, 0f, 12f),
-    GAS         (50, 37,  0f, 490f),
-    COAL        (67, 99, 0f, 820f),
-    NUCLEAR     (150, 63, 0f, 12f);
+    WIND        (25, 21.7f, 0f, 12f),
+    GAS         (50, 25.3f,  0f, 490f),
+    COAL        (67, 40.2f, 0f, 820f),
+    NUCLEAR     (150, 32.77f, 0f, 12f);
 
     // COSTS: https://www.eia.gov/outlooks/aeo/assumptions/pdf/table_8.2.pdf < this is costs for new
     // COSTS 2: https://www.iea.org/reports/projected-costs-of-generating-electricity-2020
@@ -66,7 +66,8 @@ public enum PowerType {
     }
 
     /**
-     * Calculate the possible profits based on current tax rate and energy price
+     * Calculate the possible profits based on current tax rate or trade value and energy price
+     * @param modifier the current tax rate or trade value as a modifier
      * @return The typical profits for this power type
      */
     public float possibleProfits(float modifier) {

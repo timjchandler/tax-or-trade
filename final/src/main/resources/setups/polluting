@@ -1,0 +1,7 @@
+// The power split for Europe in ... [year]
+G:0.40
+C:0.50
+W:0.00
+N:0.10
+// The total energy produced. This is measured in ... [unit]
+Tot:100

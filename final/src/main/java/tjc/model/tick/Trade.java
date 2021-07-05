@@ -12,16 +12,23 @@ public class Trade extends AbstractTick {
     private final float capChange;      // The reduction in the Carbon Dioxide cap per tick
     private static float baseForEstimates;
 
-    /**
-     * Constructor sets the cap and change rates as well as storing the world object
-     * @param world     the world object
-     * @param cap       the initial cap
-     * @param capChange the yearly reduction in cap
-     */
-    public Trade(World world, float cap, float capChange) {
+//    /**
+//     * Constructor sets the cap and change rates as well as storing the world object
+//     * @param world     the world object
+//     * @param cap       the initial cap
+//     * @param capChange the yearly reduction in cap
+//     */
+//    public Trade(World world, float cap, float capChange) {
+//        super(world);
+//        this.cap = cap;
+//        this.capChange = capChange / 52;
+//    }
+
+    public Trade(World world, float capReduction) {
         super(world);
-        this.cap = cap;
-        this.capChange = capChange / 52;
+        this.capChange = (float) Math.pow(1 - capReduction, (1f / 52f));
+        this.cap = world.getCap();
+//        System.out.println(capChange);
     }
 
     /**
@@ -37,11 +44,7 @@ public class Trade extends AbstractTick {
         float base = calculateCreditBase();
         Auction auction = new Auction(this, base, getDataManager());
         auction.commence();
-//        getAgents().forEach(Agent::cleanUpPower);
-        cap -= capChange;
-//        for (Agent agent: getAgents())
-//            System.out.print(agent.getId() + ": " + agent.getPower().size() + "\t");
-//        System.out.println("");
+        if (getTick() < 520) cap *= capChange;
         return super.tick();
     }
 
@@ -52,7 +55,7 @@ public class Trade extends AbstractTick {
     private void distributeCredits() {
         getAgents().forEach(Agent::zeroCredits);
         for (Agent agent: getAgents()) {
-            int allowance = (int) ((cap / 52) * agent.getTotalPotential() / getPossibleElectricity());
+            int allowance = (int) (cap * agent.getTotalPotential() / getPossibleElectricity());
             agent.addCredits(allowance);
         }
     }
@@ -70,5 +73,9 @@ public class Trade extends AbstractTick {
 
     public static float getBaseForEstimates() {
         return baseForEstimates;
+    }
+
+    public float getCap() {
+        return cap;
     }
 }

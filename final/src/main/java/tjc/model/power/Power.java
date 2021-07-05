@@ -60,8 +60,8 @@ public class Power extends Randomiser {
     }
 
     /**
-     * TODO: Check this!!!
-     * @return
+     * Calculates the income of the plant per unit of CO2
+     * @return the normalised income
      */
     public float carbonNormalisedIncome() {
         return World.getEnergyPrice() / (carbon / production);
@@ -140,18 +140,5 @@ public class Power extends Randomiser {
 
     public float getUnusedCost() {
         return runningCost * 0.5f - idleTime * 0.05f;
-    }
-
-
-    private boolean dynamicallyAdded;           // FIXME debug, remove
-    public boolean isDynamicallyAdded() {
-        return dynamicallyAdded;
-    }
-    public void setDynamicallyAdded(boolean dynamicallyAdded) {
-        this.dynamicallyAdded = dynamicallyAdded;
-    }
-    public void showUsage() {
-        if (dynamicallyAdded) System.out.println("New station of type " + type + " used");
-        dynamicallyAdded = false;
     }
 }

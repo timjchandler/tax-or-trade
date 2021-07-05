@@ -21,17 +21,17 @@ public class World extends Randomiser {
     private int agentCount;                 // The number of agents
     private final ArrayList<Agent> agents;  // The list of agents
     private static boolean isTaxNotTrade = false;   // The type of simulation: true for tax, false for cap and trade
-    private int totalTicks = 676;           // The total ticks to run for 104 (2 years) if not set
-    private String preset = "US-2007";
+    private int totalTicks;           // The total ticks to run for 104 (2 years) if not set
+    private String preset;
 
     // The following member variables relate to the tick updates
-    private static float taxRate = 0.01f;           // The current tax rate in 1000Euros per Tonne
-    private float taxIncrement= 0.005f;         // The yearly increase to the tax rate
-    private static float taxLimit = 0.1f;            // The maximum tax amount
-    private float cap = 500000000f;                          // The current cap on carbon emissions
-    private float capIncrement = 1000000f;                 // The yearly amount by which to increase/decrease the cap
-    private float requiredElectricity = 8000;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
-    private static final float energyPrice = 250f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
+    private static float taxRate;           // The current tax rate in 1000Euros per Tonne
+    private float taxIncrement;         // The yearly increase to the tax rate
+    private static float taxLimit;            // The maximum tax amount
+    private float cap;                          // The initial cap on carbon emissions
+    private float capIncrement;                 // The yearly amount by which to increase/decrease the cap
+    private float requiredElectricity = 5300;   // The electricity required per tick (default is mean EU usage 2018) https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_production,_consumption_and_market_overview
+    private static final float energyPrice = 94.71f;//250f;  // The money gained from producing electricity, set as 1000eur per gwh https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Electricity_price_statistics
     private DataManager dataManager = null;
 
     // The following are the managers for per tick operations
@@ -45,8 +45,7 @@ public class World extends Randomiser {
     public World(int seed) {
         setSeed(seed);
         agents = new ArrayList<>();
-        split = new PowerSplit(preset);
-        agentCount = 30;
+        agentCount = 20;
     }
 
     /**
@@ -61,6 +60,7 @@ public class World extends Randomiser {
         while (set < total) {
             Power power = new Power(type);
             set += power.getProduction();
+            cap += power.getCarbon();
             agents.get(getInt(agentCount)).addPower(power);
             count++;
         }
@@ -73,7 +73,9 @@ public class World extends Randomiser {
      */
     private void buildWorld(float totalEnergy) {
         dataManager = new DataManager(this);
-        totalEnergy *= 2f;
+        cap = 0;
+        float totalPotential = 2f;
+        totalEnergy *= totalPotential;
         createAgents(agentCount);
         float set = 0;
         set += setupPower(totalEnergy * split.getCoal(), PowerType.COAL);
@@ -81,11 +83,12 @@ public class World extends Randomiser {
         set += setupPower(totalEnergy * split.getWind(), PowerType.WIND);
         set += setupPower(totalEnergy * split.getNuclear(), PowerType.NUCLEAR);
 
+        cap /= totalPotential;
         float baseMoney = 15 * set * energyPrice / agentCount;
         for (Agent agent: agents) agent.setStartMoney(getNormal(baseMoney));
         setAgentsRequiredElectricity();
-        tax = new Tax(this, taxRate, taxIncrement);
-        trade = new Trade(this, cap, capIncrement);
+        if (isTaxNotTrade) tax = new Tax(this, taxRate, taxIncrement);
+        else trade = new Trade(this, capIncrement);
     }
 
     /**
@@ -145,8 +148,6 @@ public class World extends Randomiser {
      */
     public void start() {
         buildWorld(requiredElectricity);
-        int totalPlants = 0;
-        for (Agent agent: agents) totalPlants += agent.getPower().size();
         for (int completedTick = tick(); completedTick < totalTicks;) completedTick = tick();
     }
 
@@ -173,17 +174,9 @@ public class World extends Randomiser {
      */
     public String getSaveName() {
         StringBuilder dependent = new StringBuilder();
-        if (isTaxNotTrade) {
-            dependent.append("-tax-").append(formatFloat(taxRate));
-            dependent.append("-inc-").append(formatFloat(taxIncrement));
-        } else {
-            dependent.append("-trade-").append(formatFloatTrade(cap));
-            dependent.append("-inc-").append(formatFloatTrade(capIncrement));
-        }
-        return "seed-" + getSeed() +
-                dependent +
-                "-preset-" + preset +
-                ".csv";
+        if (isTaxNotTrade) dependent.append("-tax-").append(formatFloat(taxLimit));
+        else dependent.append("-trade-").append(formatFloatTrade(capIncrement));
+        return "seed-" + getSeed() + dependent + "-preset-" + preset + ".csv";
     }
 
     /**
@@ -193,24 +186,17 @@ public class World extends Randomiser {
      * @return  The formatted number as a string
      */
     private String formatFloat(float f) {
-        String out = String.format("%.4f", f);
-        return out.substring(2);
+        String out = String.format("%.0f", f * 1000);
+        return out;
+//        return (f * 1000) + "";
     }
 
     private String formatFloatTrade(float f) {
-        String out = String.valueOf(f);
-        out = out.substring(0, 1);
-        out += "x10-";
-        int dec = 0;
-        while (f > 1) {
-            dec++;
-            f /= 10;
-        }
-        return out + dec;
+        String raw = String.valueOf(f * 100);
+        return raw.charAt(0) + "_" + (raw.length() > 2 ? raw.charAt(2) : "");
     }
 
     // GETTERS
-
     /**
      * Getter for the price of electricity
      * @return The price in 1000 eur per GWh
@@ -297,7 +283,7 @@ public class World extends Randomiser {
      * @param isTax True if a tax simulation, false if cap and trade
      */
     public void setTaxOrTrade(boolean isTax) {
-        this.isTaxNotTrade = isTax;
+        isTaxNotTrade = isTax;
     }
 
     /**
@@ -325,11 +311,11 @@ public class World extends Randomiser {
     }
 
     /**
-     * Setter for the yearly change in CO2 cap
-     * @param capIncrement the yearly change in CO2 cap
+     * Setter for the yearly percentage change in CO2 cap
+     * @param capIncrement the yearly change in CO2 cap as a percentage
      */
     public void setCapIncrement(float capIncrement) {
-        this.capIncrement = capIncrement;
+        this.capIncrement = capIncrement / 100;
     }
 
     /**
@@ -354,6 +340,7 @@ public class World extends Randomiser {
      */
     public void setPreset(String preset) {
         this.preset = preset;
+        split = new PowerSplit(preset);
     }
 
     /**
@@ -371,4 +358,12 @@ public class World extends Randomiser {
     public static boolean isIsTaxNotTrade() {
         return isTaxNotTrade;
     }
+
+    public void setTax(int tax) {
+        taxRate = ((float) tax) / 2000f;
+        taxLimit = ((float) tax) / 1000f;
+        taxIncrement = (taxLimit - taxRate) / 10;
+    }
+
+
 }

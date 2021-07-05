@@ -18,12 +18,14 @@ public class Auction {
     private final long initialCredits;
     private float price;
     private long totalCredits;
+    private float totalSpent;
 
     public Auction(Trade trade, float initialPrice, DataManager dm) {
         this.trade = trade;
         this.price = this.initialPrice = initialPrice;
         this.dm = dm;
         totalCredits = 0;
+        totalSpent = 0;
         map = new HashMap<>();
         for (Agent agent: trade.getAgents()) {
             totalCredits += agent.getCredits();
@@ -36,6 +38,7 @@ public class Auction {
     public void commence() {
         while(handleBids() && price > 0) price -= 0.01 * initialPrice;
         reassignCredits();
+//        System.out.println("Price per credit: " + totalSpent / (initialCredits - totalCredits) + "\t" + totalSpent  + "\t" + initialCredits  + "\t" + totalCredits);
     }
 
     private boolean handleBids() {
@@ -43,16 +46,16 @@ public class Auction {
             float progress = ((float) totalCredits) / ((float) initialCredits);
             int bought = entry.getKey().decideBid(price, progress);
             if (bought > totalCredits || price == 0 ||
-                    dm.getElectricityThisTick() > trade.getRequiredElectricity() * 1.1) return false;
-            if (entry.getKey().decideBid(price, progress) > 0) {
+                    dm.getElectricityThisTick() > trade.getRequiredElectricity() * 1.2) return false;
+            if (bought > 0) {
                 if (entry.getValue() > bought) {
                     entry.setValue(entry.getValue() - bought);
                     entry.getKey().useCredits(bought, dm);
-
                 } else {
                     entry.getKey().addMoney(-1 * bought * price);
                     paySellers(bought, entry.getKey());
                 }
+                totalSpent += bought * price;
                 totalCredits -= bought;
             }
         }
