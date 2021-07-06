@@ -12,23 +12,10 @@ public class Trade extends AbstractTick {
     private final float capChange;      // The reduction in the Carbon Dioxide cap per tick
     private static float baseForEstimates;
 
-//    /**
-//     * Constructor sets the cap and change rates as well as storing the world object
-//     * @param world     the world object
-//     * @param cap       the initial cap
-//     * @param capChange the yearly reduction in cap
-//     */
-//    public Trade(World world, float cap, float capChange) {
-//        super(world);
-//        this.cap = cap;
-//        this.capChange = capChange / 52;
-//    }
-
     public Trade(World world, float capReduction) {
         super(world);
         this.capChange = (float) Math.pow(1 - capReduction, (1f / 52f));
         this.cap = world.getCap();
-//        System.out.println(capChange);
     }
 
     /**

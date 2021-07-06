@@ -24,7 +24,7 @@ public abstract class AbstractTick extends Randomiser {
     private int tick;                                           // The current tick
     private float requiredElectricity;                          // The electricity that must be generated per tick
     private final float electricityIncrement = 1 + 0.03f / 52;  // Electricity increment at 3%/year. Applied per week
-    private final float newBuildChance = 0.3f;                  // The per tick probability of building a new power plant
+    private final float newBuildChance = 0.2f;                  // The per tick probability of building a new power plant
     private float possibleElectricity;                          // The maximum electricity that can be generated
 
     /**
@@ -98,10 +98,10 @@ public abstract class AbstractTick extends Randomiser {
      */
     private PowerType chooseNewPower() {
         float modifier = World.isIsTaxNotTrade() ? Tax.getTaxRate() : Trade.getBaseForEstimates();
-        float coal = (float) Math.pow(PowerType.COAL.possibleProfits(modifier), 1) / PowerType.COAL.getMeanPower();
-        float gas = (float) Math.pow(PowerType.GAS.possibleProfits(modifier), 1) / PowerType.GAS.getMeanPower();
-        float nuclear = (float) Math.pow(PowerType.NUCLEAR.possibleProfits(modifier), 1) / PowerType.NUCLEAR.getMeanPower();
-        float wind = (float) Math.pow(PowerType.WIND.possibleProfits(modifier), 1) / PowerType.WIND.getMeanPower();
+        float coal = (float) Math.pow(PowerType.COAL.possibleProfits(modifier), 2) / PowerType.COAL.getMeanPower();
+        float gas = (float) Math.pow(PowerType.GAS.possibleProfits(modifier), 2) / PowerType.GAS.getMeanPower();
+        float nuclear = (float) Math.pow(PowerType.NUCLEAR.possibleProfits(modifier), 2) / PowerType.NUCLEAR.getMeanPower();
+        float wind = (float) Math.pow(PowerType.WIND.possibleProfits(modifier), 2) / PowerType.WIND.getMeanPower();
         float total = coal + gas + nuclear + wind;
         int choice = getInt(100);
         if (choice < 100 * coal / total) return PowerType.COAL;

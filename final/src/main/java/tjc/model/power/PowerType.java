@@ -9,7 +9,6 @@ import tjc.model.tick.Tax;
  * "GAS"    - representative of natural and derived gas power plants.
  * "COAL"   - representative of coal and lignite power plants - this has been expanded to include oil for simplicity - the difference in generation between the two is negligible when compared to the other types of power.
  * "NUCLEAR"- representative of only nuclear power plants
- *
  * CO2 emissions are measured as tonne / GWh
  */
 public enum PowerType {
@@ -18,9 +17,6 @@ public enum PowerType {
     GAS         (50, 25.3f,  0f, 490f),
     COAL        (67, 40.2f, 0f, 820f),
     NUCLEAR     (150, 32.77f, 0f, 12f);
-
-    // COSTS: https://www.eia.gov/outlooks/aeo/assumptions/pdf/table_8.2.pdf < this is costs for new
-    // COSTS 2: https://www.iea.org/reports/projected-costs-of-generating-electricity-2020
 
     private final float meanPower;      // The mean power produced by this type in Gigawatt Hours (GWH) / week
     private final float meanCost;       // The mean cost of running this plant as 1000EUR/GWH
@@ -73,7 +69,4 @@ public enum PowerType {
     public float possibleProfits(float modifier) {
         return (World.getEnergyPrice() - meanCost) / (meanCarbon * modifier);
     }
-//    public float possibleProfits(float modifier) {
-//        return World.getEnergyPrice() - (meanCarbon * modifier + upkeepWeight);
-//    }
 }

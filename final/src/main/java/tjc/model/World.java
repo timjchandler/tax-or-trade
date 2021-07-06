@@ -56,13 +56,11 @@ public class World extends Randomiser {
      */
     private float setupPower(float total, PowerType type) {
         float set = 0;
-        int count = 0;
         while (set < total) {
             Power power = new Power(type);
             set += power.getProduction();
             cap += power.getCarbon();
             agents.get(getInt(agentCount)).addPower(power);
-            count++;
         }
         return set;
     }
