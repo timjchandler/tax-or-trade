@@ -27,11 +27,11 @@ class analysis:
 
 
     def getCE(self, isTax):
-        return self.__getCE(isTax)
+        return self.getCE(isTax)
 
     def plotComparison(self):
-        taxMeanC, taxMeanE = self.__getCE(True)
-        tradeMeanC, tradeMeanE = self.__getCE(False)
+        taxMeanC, taxMeanE = self.getCE(True)
+        tradeMeanC, tradeMeanE = self.getCE(False)
         taxMeanC['Ticks'] = taxMeanC.index + 1
         taxMeanE['Ticks'] = taxMeanE.index + 1
         tradeMeanC['Ticks'] = tradeMeanC.index + 1
@@ -85,7 +85,7 @@ class analysis:
 
     def __makePlots(self, isTax):
         # df = self.__getCombinedDF(isTax)
-        carbon, electricity = self.__getCE(isTax)
+        carbon, electricity = self.getCE(isTax)
         carbon = carbon.groupby(carbon.index)
         carbon = carbon.mean()
         carbon = carbon.rename(columns={'Coal_Carbon'   : 'Coal', 
@@ -107,7 +107,7 @@ class analysis:
 
         return cPlot, ePlot
 
-    def __getCE(self, isTax):
+    def getCE(self, isTax):
         df = self.__getCombinedDF(isTax)
         carbon = df.filter(regex='Carbon$', axis=1)
         electricity = df.filter(regex='Electricity$', axis=1)

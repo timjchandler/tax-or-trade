@@ -24,7 +24,7 @@ public abstract class AbstractTick extends Randomiser {
     private int tick;                                           // The current tick
     private float requiredElectricity;                          // The electricity that must be generated per tick
     private final float electricityIncrement = 1 + 0.03f / 52;  // Electricity increment at 3%/year. Applied per week
-    private final float newBuildChance = 0.2f;                  // The per tick probability of building a new power plant
+    private final float newBuildChance = 0.3f;                  // The per tick probability of building a new power plant
     private float possibleElectricity;                          // The maximum electricity that can be generated
 
     /**

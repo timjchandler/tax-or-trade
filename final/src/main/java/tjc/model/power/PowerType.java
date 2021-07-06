@@ -13,10 +13,10 @@ import tjc.model.tick.Tax;
  */
 public enum PowerType {
 
-    WIND        (25, 21.7f, 0f, 12f),
-    GAS         (50, 25.3f,  0f, 490f),
-    COAL        (67, 40.2f, 0f, 820f),
-    NUCLEAR     (150, 32.77f, 0f, 12f);
+    WIND        (25, 21.7f, 0f, 6f),//12f),
+    GAS         (50, 25.3f,  0f, 245f),//490f),
+    COAL        (67, 40.2f, 0f, 420f),//820f),
+    NUCLEAR     (150, 32.77f, 0f, 6f);//12f);
 
     private final float meanPower;      // The mean power produced by this type in Gigawatt Hours (GWH) / week
     private final float meanCost;       // The mean cost of running this plant as 1000EUR/GWH

@@ -186,7 +186,6 @@ public class World extends Randomiser {
     private String formatFloat(float f) {
         String out = String.format("%.0f", f * 1000);
         return out;
-//        return (f * 1000) + "";
     }
 
     private String formatFloatTrade(float f) {

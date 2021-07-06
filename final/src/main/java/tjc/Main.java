@@ -21,7 +21,7 @@ public class Main {
                 world.setPreset(preset);
                 world.start();
             }
-            System.out.println("Finished " + runs + " Tax runs with seeds in the range [" + seed + ", " + (seed + runs - 1) + "]");
+            System.out.println("Finished " + runs + " Tax runs with tax rate " + tax + " using seeds in the range [" + seed + ", " + (seed + runs - 1) + "]");
             for (int idx = 0; idx < runs; ++ idx) {
                 World world = new World(idx + seed);
                 world.setTaxOrTrade(false);
@@ -30,7 +30,7 @@ public class Main {
                 world.setPreset(preset);
                 world.start();
             }
-            System.out.println("Finished " + runs + " Trade runs with seeds in the range [" + seed + ", " + (seed + runs - 1) + "]");
+            System.out.println("Finished " + runs + " Trade runs with cap reduction rate " + trade + " using seeds in the range [" + seed + ", " + (seed + runs - 1) + "]");
         }
     }
 
