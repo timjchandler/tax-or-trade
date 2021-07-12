@@ -4,8 +4,10 @@ import pingouin as pg
 from matplotlib import pyplot as plt
 from functions.functions import analysis
 
+# Combines the data from the model to produce comparison plots and statistics
 class combine:
 
+    # Constructor, stores the information for each run to be compared 
     def __init__(self, preset):
         self.preset = preset
         call = "java -jar ../model.jar"
@@ -49,7 +51,7 @@ class combine:
         ax4 = sns.lineplot(x="Ticks", y="c1_0", data = df, ci='sd', label="Trade: 1.0% reduction per year", color="gold")
         ax5 = sns.lineplot(x="Ticks", y="c2_5", data = df, ci='sd', label="Trade: 2.5% reduction per year", color="orange")
         ax6 = sns.lineplot(x="Ticks", y="c5_0", data = df, ci='sd', label="Trade: 5.0% reduction per year", color="chocolate")
-        ax6.set(xlabel="Time (weeks)", ylabel="Carbon Dioxide (million tonnes)", title=("Yearly CO2 Emission Rates Over Time, " + self.__get_preset_readable() + " initial state"))
+        ax6.set(xlabel="Time (weeks)", ylabel="Mean Carbon Dioxide Emission $\pm$ 1 sd (million tonnes)", title=("Yearly CO2 Emission Rates Over Time, " + self.__get_preset_readable() + " initial state"))
         plt.savefig(fname=(self.preset + ".pdf"), format="pdf")
         plt.show()
 
@@ -85,8 +87,8 @@ class combine:
         df = self.__get_plot_df()
 
         five    = self.__adapt_df(df.loc[df["Ticks"] == 260].drop(["Ticks"], axis=1))
-        ten     = self.__adapt_df(df.loc[df["Ticks"] == 260].drop(["Ticks"], axis=1))
-        fifteen = self.__adapt_df(df.loc[df["Ticks"] == 260].drop(["Ticks"], axis=1))
+        ten     = self.__adapt_df(df.loc[df["Ticks"] == 520].drop(["Ticks"], axis=1))
+        fifteen = self.__adapt_df(df.loc[df["Ticks"] == 780].drop(["Ticks"], axis=1))
 
         dv = "Carbon"
         btwn = "Measure"
