@@ -58,10 +58,18 @@ public class Trade extends AbstractTick {
         return baseForEstimates;
     }
 
+    /**
+     * Getter for the base rate of value for credits
+     * @return The base value for credits
+     */
     public static float getBaseForEstimates() {
         return baseForEstimates;
     }
 
+    /**
+     * Getter for the current cap
+     * @return The current cap
+     */
     public float getCap() {
         return cap;
     }

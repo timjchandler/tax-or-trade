@@ -111,10 +111,18 @@ public class DataManager {
         return save.getPath();
     }
 
+    /**
+     * Returns the electricity generated this tick
+     * @return The electricity generated this tick
+     */
     public float getElectricityThisTick() {
         return data.getTotalElectricity();
     }
 
+    /**
+     * Gets the CO2 generated this tick
+     * @return The CO2 generated this tick
+     */
     public float getCarbonThisTick() {
         return data.getTotalCarbon();
     }

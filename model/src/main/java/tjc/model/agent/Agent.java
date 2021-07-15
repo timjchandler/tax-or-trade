@@ -247,25 +247,21 @@ public class Agent {
         power.forEach(Power::resetUsedThisTick);
     }
 
+    /**
+     * Sorts the held power plants in ascending order of income normalised for CO2 emissions. Then reverses
+     * the list to descending order.
+     */
     public void sortPowerNormalised() {
         power.sort(((o1, o2) -> Float.compare(o1.carbonNormalisedIncome(), o2.carbonNormalisedIncome())));
         Collections.reverse(power);
     }
 
-
-    public void showCurrentMoney() {
-        System.out.println(stats.getMoneyTot());
-    }
-
+    /**
+     * Removes money from total based on the running costs of unused power plants.
+     */
     public void costUnused() {
         float costs = 0;
         for (Power p: power) costs += p.getUnusedCost();
         addMoney(-1 * costs);
     }
-//
-//    public void cleanUpPower() {
-//        ArrayList<Power> toRemove = new ArrayList<>();
-//        for (Power p: power) if (!p.decayIdle()) toRemove.add(p);
-//        for (Power p: toRemove) deletePower(p);
-//    }
 }

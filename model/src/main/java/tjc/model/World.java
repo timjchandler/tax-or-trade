@@ -188,6 +188,11 @@ public class World extends Randomiser {
         return out;
     }
 
+    /**
+     * Formats the floats within the trade model into a string for the save file
+     * @param f The float to format
+     * @return  The string for the filename
+     */
     private String formatFloatTrade(float f) {
         String raw = String.valueOf(f * 100);
         return raw.charAt(0) + "_" + (raw.length() > 2 ? raw.charAt(2) : "");
@@ -348,14 +353,26 @@ public class World extends Randomiser {
         this.agentCount = agentCount;
     }
 
+    /**
+     * Getter for the tax limit
+     * @return The tax limit
+     */
     public static float getTaxLimit() {
         return taxLimit;
     }
 
+    /**
+     * Getter for the measure currently in use
+     * @return True if Tax, false if Trade
+     */
     public static boolean isIsTaxNotTrade() {
         return isTaxNotTrade;
     }
 
+    /**
+     * Setter for the target tax rate and its constituent variables
+     * @param tax The tax rate
+     */
     public void setTax(int tax) {
         taxRate = ((float) tax) / 2000f;
         taxLimit = ((float) tax) / 1000f;

@@ -5,4 +5,6 @@ index.html
 target/
 *.csv
 *.pdf
+*.png
 __pycache__/
+

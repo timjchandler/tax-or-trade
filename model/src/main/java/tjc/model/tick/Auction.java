@@ -20,6 +20,13 @@ public class Auction {
     private long totalCredits;
     private float totalSpent;
 
+    /**
+     * Constructor for the auction. Sets variables and initialises the map. Gathers credits from the agents
+     * mapping them to the agent themselves before setting the agents credits to zero.
+     * @param trade             The trade object of the current simulation
+     * @param initialPrice      The initial bid price
+     * @param dm                The data manager for the current simulation
+     */
     public Auction(Trade trade, float initialPrice, DataManager dm) {
         this.trade = trade;
         this.price = this.initialPrice = initialPrice;
@@ -35,12 +42,20 @@ public class Auction {
         initialCredits = totalCredits;
     }
 
+    /**
+     * Begin the auction, receiving bids and decrementing the bid value as required. Reassigns credits once complete.
+     */
     public void commence() {
         while(handleBids() && price > 0) price -= 0.01 * initialPrice;
         reassignCredits();
-//        System.out.println("Price per credit: " + totalSpent / (initialCredits - totalCredits) + "\t" + totalSpent  + "\t" + initialCredits  + "\t" + totalCredits);
     }
 
+    /**
+     * Presents bids to the agents, receives orders from the agents for the number of credits desired when a bid
+     * is accepted. Tells the auction to stop once either the credits run out, or the desired electicity total (1.2 *
+     * required energy, in line with the over production in real world values) is reached.
+     * @return False if the auction should end, else true
+     */
     private boolean handleBids() {
         for (Map.Entry<Agent, Integer> entry: map.entrySet()) {
             float progress = ((float) totalCredits) / ((float) initialCredits);
@@ -62,6 +77,13 @@ public class Auction {
         return true;
     }
 
+    /**
+     * Overloaded method: Recursive part
+     * Distributes money to agents based on the amount of their credits sold.
+     * @param credits           The number of credits
+     * @param buyer             The agent who bought the credits - agents cannot buy from themelves
+     * @param remainingSellers  The sellers who still need to be paid
+     */
     private void paySellers(int credits, Agent buyer, int remainingSellers) {
         int epsilon = 1000;
         if (remainingSellers == 0 || credits < epsilon) return;
@@ -85,10 +107,18 @@ public class Auction {
         if (leftover != 0) paySellers(leftover, buyer, canSell);
     }
 
+    /**
+     * Overloaded method: Recursion initialising part
+     * @param credits   The number of credits
+     * @param buyer     The agent who bought them
+     */
     private void paySellers(int credits, Agent buyer) {
         paySellers(credits, buyer, map.size() - 1);
     }
 
+    /**
+     * Reassigns remaining credits to agents.
+     */
     private void reassignCredits() {
         for (Map.Entry<Agent, Integer> entry: map.entrySet())
             entry.getKey().addCredits(entry.getValue());

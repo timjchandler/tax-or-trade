@@ -163,6 +163,10 @@ public enum DataCGNW {
         return coalElectricity + gasElectricity + nuclearElectricity + windElectricity;
     }
 
+    /**
+     * Getter for the sum of all CO2 generated
+     * @return The sum of all CO2 generated this tick
+     */
     public float getTotalCarbon() {
         return coalCarbon + gasCarbon + nuclearCarbon + windCarbon;
     }

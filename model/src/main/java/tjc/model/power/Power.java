@@ -130,14 +130,25 @@ public class Power extends Randomiser {
         this.usedThisTick = usedThisTick;
     }
 
+    /**
+     * Resets the power plants used marker to mark it as unused.
+     */
     public void resetUsedThisTick() {
         usedThisTick = false;
     }
 
+    /**
+     * Getter for the time that the power plant has been unused
+     * @return The number of ticks that the power plant has remained unused
+     */
     public int getIdleTime() {
         return idleTime;
     }
 
+    /**
+     * Getter for the cost of the plant being unused.
+     * @return The unused cost of the power plant.
+     */
     public float getUnusedCost() {
         return runningCost * 0.5f - idleTime * 0.05f;
     }
