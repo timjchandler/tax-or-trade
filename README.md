@@ -2,7 +2,7 @@
 
 The java model may be run via the Python Notebook ```run.ipynb``` found in the ```analysis``` directory. For comparisons between tax and trade models, ```combine.ipynb``` may be run.
 
-The javadoc for the model may be found [here]()
+The javadoc for the model may be found [here](https://timjchandler.github.io/tax-or-trade/javadoc/overview-summary.html)
 
 Alternatively the model can be run directly from the command line.
 
